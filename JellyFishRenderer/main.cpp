@@ -12,6 +12,7 @@
 using namespace std;
 using namespace Angel;
 
+const vec4 BACKGROUND = vec4(93.0/255,145.0/255,201.0/255,1.0);
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 800;
 
@@ -101,19 +102,23 @@ vector<Vertex> initData(char * mesh1){
 	}
 
 	//test for having only triangles.
-	if(indices.size() % 3 == 1) {
+/*	if(indices.size() % 3 == 1) {
 			indices.push_back(0);
 			indices.push_back(1);
 	} else if(indices.size() % 3 == 2) {
 			indices.push_back(0);
 	}
 
+	*/
+
 	for(int i = 0; i <  indices.size(); i++) {
-		cout << "Vertex drawn: " << rest[indices[i]].position << endl; 
-		if(i % 3 == 0) {
-			cout << endl;
+		
+		float prod = dot(rest[indices[i]].position,rest[indices[i]].normal);
+		if(prod < 0) {
+			cout << "Dot: " << prod << endl; 
 		}
 	}
+	
 	//cout << "Interleaving data" << endl;
 	//vector<Vertex> interleavedVertexData = interleaveData(position[0], color[0], position[1], color[1]);
 	
@@ -139,11 +144,12 @@ void loadShader(){
 	if (blendValueUniform == GL_INVALID_INDEX) {
 		cerr << "Shader did not contain/use the 'blendValue' uniform."<<endl;
 	}
+	*/
 	normalAttribute = glGetAttribLocation(shaderProgram, "normal"); 
 	if (normalAttribute == GL_INVALID_INDEX) {
 		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
 	}
-	*/
+	
 }
 
 void updateTitle(){
@@ -158,22 +164,31 @@ void updateTitle(){
 }
 
 void display() {	
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(BACKGROUND.x,BACKGROUND.y,BACKGROUND.z,BACKGROUND.w);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 	const float timeScale = 0.008f;
 	
     glUseProgram(shaderProgram);
 
-	mat4 view = Translate(0,0,-dist) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
+	mat4 view = Translate(0,0,-dist) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x) * Scale(4,4,4);
+	//mat4 view = LookAt(vec4(2,2,2,1),vec4(0,0,0,1),vec4(0,1,0,1));
 	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 1000);
 	glUniformMatrix4fv(projectionUniform, 1, GL_TRUE, projection);
 	glUniformMatrix4fv(modelViewUniform, 1, GL_TRUE, view);
 	glUniform1fv(blendValueUniform, 1, &blendValue);
     
     // vertex shader uniforms
+	
+	glDisable(GL_DEPTH_TEST);
+
+	//glEnable(GL_CULL_FACE);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
-    
+	glDisable(GL_BLEND);
+
 	glutSwapBuffers();
 
 	updateTitle();
@@ -272,7 +287,7 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 
 	loadShader();
-	char * mesh1 = "cube.obj";
+	char * mesh1 = "semisphere.obj";
 
 	uploadData(initData(mesh1));
 	

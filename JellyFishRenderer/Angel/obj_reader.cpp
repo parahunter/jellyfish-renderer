@@ -29,25 +29,25 @@ bool readOBJFile(const char* filename, vector<Vertex> & result){
 				if (strncmp("v ", line, 2)==0){
 					string s(line);
 					vec3 res = splitMyLine(s.substr(2,s.length()-1).c_str());
-					cout << "v line " << res;
+					//cout << "v line " << res;
 					vertices.push_back(res);
 				} else if (strncmp("vn ", line, 3)==0){
 					string s(line);
 					vec3 res = splitMyLine(s.substr(3,s.length()-1).c_str());
-					cout << "vn line " << res;
+					//cout << "vn line " << res;
 					normals.push_back(res);
 				} else if (strncmp("f ", line, 2)==0){
 					TriangleFace t = splitMyFace(line,2);
 					for(int i = 0; i < 3; i++) {
 						Vertex v = { vertices.at(t.i[i]-1), normals.at(t.n[i]-1) };
 						result.push_back(v);
-						cout << "Vertex< position: " << v.position << " normal: " << v.normal <<">" << endl;
+					//	cout << "Vertex< position: " << v.position << " normal: " << v.normal <<">" << endl;
 					}
 				} else {
-					cout << "noone";
+					//cout << "noone";
 				}
 			}
-			cout << endl;
+			//cout << endl;
 		}
 	}
 	myReadFile.close();
