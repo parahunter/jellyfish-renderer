@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <None Include="blending.frag" />
-    <None Include="blending.vert" />
+    <None Include="head.vert" />
+    <None Include="head.frag" />
+    <None Include="tentacles.frag" />
+    <None Include="tentacles.vert" />
+    <None Include="JellyFishRenderer.aps" />
+    <None Include="untitled.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -15,6 +19,7 @@
     <ClCompile Include="Angel\vtk_reader.cpp">
       <Filter>Angel</Filter>
     </ClCompile>
+    <ClCompile Include="Jellyfish.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angel\Angel.h">
@@ -35,6 +40,7 @@
     <ClInclude Include="Angel\vtk_reader.h">
       <Filter>Angel</Filter>
     </ClInclude>
+    <ClInclude Include="Jellyfish.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Angel">

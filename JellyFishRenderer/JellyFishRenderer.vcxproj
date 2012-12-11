@@ -11,13 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="blending.frag" />
-    <None Include="blending.vert" />
+    <None Include="head.frag" />
+    <None Include="head.vert" />
+    <None Include="JellyFishRenderer.aps" />
+    <None Include="tentacles.frag" />
+    <None Include="tentacles.vert" />
+    <None Include="untitled.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Angel\InitShader.cpp" />
     <ClCompile Include="Angel\obj_reader.cpp" />
     <ClCompile Include="Angel\vtk_reader.cpp" />
+    <ClCompile Include="Jellyfish.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -27,6 +32,7 @@
     <ClInclude Include="Angel\obj_reader.h" />
     <ClInclude Include="Angel\vec.h" />
     <ClInclude Include="Angel\vtk_reader.h" />
+    <ClInclude Include="Jellyfish.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{880E6326-CDA4-420A-9426-83C102504E6A}</ProjectGuid>
