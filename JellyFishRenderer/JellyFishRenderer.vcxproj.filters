@@ -5,8 +5,6 @@
     <None Include="head.frag" />
     <None Include="tentacles.frag" />
     <None Include="tentacles.vert" />
-    <None Include="JellyFishRenderer.aps" />
-    <None Include="untitled.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

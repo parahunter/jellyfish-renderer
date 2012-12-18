@@ -8,9 +8,12 @@ position(position), rotation(rotation), velocity(velocity), scale(scale), mesh(m
 
 }
 
-void Jellyfish::update(mat4 &view)
+
+void Jellyfish::update(float deltatime, mat4 &view)
 {
-	mat4 modelView = view * Translate(position) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale);
+	position += velocity*deltatime;
+
+	mat4 modelView = view * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale) * Translate(position);
 	
 	glUniformMatrix4fv(modelviewUniform, 1, GL_TRUE, modelView);
 	
@@ -20,18 +23,19 @@ void Jellyfish::update(mat4 &view)
 const int TENTACLES_OUTER_CIRCLE = 10;
 const int TENTACLES_INNER_CIRCLE = 8;
 
-void Jellyfish::updateTentacles(mat4 &view)
+void Jellyfish::updateTentacles(mat4 &view, GLint phaseShiftUniform)
 {
+	
+	mat4 model = RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale) * Translate(position);
 
 
-	mat4 model = Translate(position)  * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale);
+	for(int i = 0; i < TENTACLES_OUTER_CIRCLE; i++) 
+	{
 
+		mat4 tentacleTransformation = RotateY(i * 360/TENTACLES_OUTER_CIRCLE) * Translate(vec3(20.0f, -68.0f,0));
+		mat4 modelView = view * model *  tentacleTransformation;
 
-	for(int i = 0; i < TENTACLES_OUTER_CIRCLE; i++) {
-		mat4 tentacleTransformation = RotateY(i * 360/TENTACLES_OUTER_CIRCLE) * Translate(vec3(2.0f, -6.8f,0));
-		mat4 modelView = view * tentacleTransformation * model;
-
-		modelView[0][0] = scale.x;
+		modelView[0][0] = 0.5*scale.x;
 		//modelView[0][1] = 0;	
 		modelView[0][2] = 0;
 
@@ -45,15 +49,16 @@ void Jellyfish::updateTentacles(mat4 &view)
 		modelView[2][2] = scale.z;
 
 		glUniformMatrix4fv(tentacleModelViewUniform, 1, GL_TRUE, modelView);
-	
+		GLfloat f = modelView[0][3] + modelView[1][3] +  modelView[2][3];
+		glUniform1f(phaseShiftUniform, f);
 		glDrawElements(GL_TRIANGLES, tentacleBufferSize, GL_UNSIGNED_INT, tentacleMesh);
 	}
 
 	for(int i = 0; i < TENTACLES_INNER_CIRCLE; i++) {
-		mat4 tentacleTransformation = RotateY(i * 360/TENTACLES_INNER_CIRCLE + 10) * Translate(vec3(1.4f, -6.8f,0));
-		mat4 modelView = view * tentacleTransformation * model;
+		mat4 tentacleTransformation = RotateY(i * 360/TENTACLES_OUTER_CIRCLE) * Translate(vec3(15.0f, -68.0f,0));
+		mat4 modelView = view * model *  tentacleTransformation;
 
-		modelView[0][0] = scale.x;
+		modelView[0][0] = 0.5*scale.x;
 		//modelView[0][1] = 0;	
 		modelView[0][2] = 0;
 
@@ -67,7 +72,8 @@ void Jellyfish::updateTentacles(mat4 &view)
 		modelView[2][2] = scale.z;
 
 		glUniformMatrix4fv(tentacleModelViewUniform, 1, GL_TRUE, modelView);
-	
+		GLfloat f = modelView[0][3] + modelView[1][3] +  modelView[2][3];
+		glUniform1f(phaseShiftUniform, f);
 		glDrawElements(GL_TRIANGLES, tentacleBufferSize, GL_UNSIGNED_INT, tentacleMesh);
 	}
 }

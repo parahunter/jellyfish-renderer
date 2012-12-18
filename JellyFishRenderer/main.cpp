@@ -1,9 +1,11 @@
 // 02561-03-01
+
+#define JELLYFISHES 100
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
-
-//#define GLEW_STATIC
+#include <time.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -15,6 +17,16 @@
 using namespace std;
 using namespace Angel;
 
+const float SPEED = 100.0f;
+const float MIN_SCALE = 25.0f;
+const float MAX_HEIGHT = 2000.0f;
+// cube for generating jellies
+const float MAX_SCALE = 50.0f;
+const unsigned int STEPS_PER_DIRECTION = 10;
+const float MAX_SPAWN_HEIGHT = 1000.f;
+const vec3 cubeOrigin(-MAX_SCALE*0.5*STEPS_PER_DIRECTION, -MAX_SPAWN_HEIGHT ,-MAX_SCALE*0.5*STEPS_PER_DIRECTION);
+
+// end of cube generator
 const vec4 BACKGROUND = vec4(93.0/255,145.0/255,201.0/255,1.0);
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 800;
@@ -37,6 +49,7 @@ GLuint tentaclePositionAttribute,
 	tentacleProjectionUniform;
 GLuint tentacleVertexArrayObject,
 	tentacleTimeUniform,
+	tentaclePhaseShiftUniform,
 	tentacleVertexBuffer;
 /*
 struct Vertex {
@@ -52,13 +65,15 @@ vector<unsigned int> tentacleIndices;
 vector<Jellyfish> jellys;
 
 vec2 sphericalCoordinates; // two first components of spherical coordinates (azimuth and elevation)
-float dist = 15; // last component of spherical coordinates
+float dist = 100; // last component of spherical coordinates
 vec2 angleOffset;
 vec2 mousePos;
-float timeCounter = 0.0f;
+double timeCounter = 0.0;
+
 
 void loadShader();
 void display();
+vec3 generateRandomJellyfishPosition();
 
 /*
 vector<Vertex> interleaveData(vector<float> &position, vector<float> &color, vector<float> &position2, vector<float> &color2){
@@ -130,7 +145,7 @@ vector<Vertex> initData(char * mesh1, vector<unsigned int> &indices){
 			exit(1);
 		}
 
-		cout << "loaded file with num of verts :  " << rest.size() << std::endl;
+		cout << "*" << rest.size();
 	
 	//indices are trivially rendered
 	for(int i = 0; i < rest.size(); i++) {
@@ -146,17 +161,6 @@ vector<Vertex> initData(char * mesh1, vector<unsigned int> &indices){
 	}
 
 	*/
-<<<<<<< HEAD
-=======
-
-	for(int i = 0; i <  indices.size(); i++) {
-		
-		float prod = dot(rest[indices[i]].position,rest[indices[i]].normal);
-		if(prod < 0) {
-			cout << "Dot: " << prod << endl; 
-		}
-	}
->>>>>>> a6b3cb81d48864fa616a1d90a018e5dac05f7c7f
 	
 	//cout << "Interleaving data" << endl;
 	//vector<Vertex> interleavedVertexData = interleaveData(position[0], color[0], position[1], color[1]);
@@ -193,7 +197,11 @@ void loadShader()
 		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
 	}
 
-
+	tentaclePhaseShiftUniform = glGetUniformLocation(tentacleShaderProgram, "phaseShift"); 
+	if (tentaclePhaseShiftUniform == GL_INVALID_INDEX) {
+		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
+	}
+	
 	shaderProgram = InitShader("head.vert",  "head.frag", "fragColor");
 
 	timeUniform = glGetUniformLocation(shaderProgram, "time");
@@ -214,74 +222,37 @@ void loadShader()
 	if (positionAttribute == GL_INVALID_INDEX){
 		cerr << "Shader did not contain/use the 'position' attribute." << endl;
 	}
-<<<<<<< HEAD
 	
-=======
-	/*
-	blendValueUniform = glGetUniformLocation(shaderProgram, "blendValue");
-	if (blendValueUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'blendValue' uniform."<<endl;
-	}
-	*/
->>>>>>> a6b3cb81d48864fa616a1d90a018e5dac05f7c7f
 	normalAttribute = glGetAttribLocation(shaderProgram, "normal"); 
 	if (normalAttribute == GL_INVALID_INDEX) {
 		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> a6b3cb81d48864fa616a1d90a018e5dac05f7c7f
 }
 
 void updateTitle(){
 	static int count = 0;
 	if (count == 10){
-		char* buffer = "jellyfish renderer";
-
+		char buffer[50];
+	
 		glutSetWindowTitle(buffer);
 		count = 0;
 	}
 	count++;
 }
 
-<<<<<<< HEAD
 void display() 
 {	   
-	//glClearColor(1.0, 0 , 0,1);
 	glClearColor(BACKGROUND.x,BACKGROUND.y,BACKGROUND.z,BACKGROUND.w);
-=======
-void display() {	
-    glClearColor(BACKGROUND.x,BACKGROUND.y,BACKGROUND.z,BACKGROUND.w);
->>>>>>> a6b3cb81d48864fa616a1d90a018e5dac05f7c7f
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-<<<<<<< HEAD
+	double currentTime = ((double)clock())/CLOCKS_PER_SEC;
+	float deltatime = currentTime - timeCounter;
+	timeCounter = currentTime;
+
 	mat4 view = Translate(0,0,-dist) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
 
 	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 1000);
-=======
-	mat4 view = Translate(0,0,-dist) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x) * Scale(4,4,4);
-	//mat4 view = LookAt(vec4(2,2,2,1),vec4(0,0,0,1),vec4(0,1,0,1));
-	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 1000);
-	glUniformMatrix4fv(projectionUniform, 1, GL_TRUE, projection);
-	glUniformMatrix4fv(modelViewUniform, 1, GL_TRUE, view);
-	glUniform1fv(blendValueUniform, 1, &blendValue);
-    
-    // vertex shader uniforms
-	
-	glDisable(GL_DEPTH_TEST);
-
-	//glEnable(GL_CULL_FACE);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
-	glDisable(GL_BLEND);
-
-	glutSwapBuffers();
->>>>>>> a6b3cb81d48864fa616a1d90a018e5dac05f7c7f
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -294,26 +265,32 @@ void display() {
 		
 	for(int i = 0 ; i < jellys.size() ; i++)
 	{
+		if(jellys.at(i).position.y > MAX_HEIGHT) {
+			jellys.at(i).position = generateRandomJellyfishPosition();
+		}
 		glBindVertexArray(vertexArrayObject);
 		glUseProgram(shaderProgram);
 		glUniformMatrix4fv(projectionUniform, 1, GL_TRUE, projection);
-		glUniform1f(timeUniform, timeCounter);
-		
-		jellys.at(i).update(view);
-		
+		glUniform1f(timeUniform, (float)timeCounter);
+
+
+		jellys.at(i).update(deltatime,view);
+
 		glBindVertexArray(tentacleVertexArrayObject);
 		glUseProgram(tentacleShaderProgram);
-		glUniform1f(tentacleTimeUniform, timeCounter);
+		glUniform1f(tentacleTimeUniform, (float)timeCounter);
 		glUniformMatrix4fv(tentacleProjectionUniform, 1, GL_TRUE, projection);
 		
-		jellys.at(i).updateTentacles(view);
-		
+		jellys.at(i).updateTentacles(view, tentaclePhaseShiftUniform);
+
 	}
 
 	glFlush();
 	glDisable(GL_BLEND);
 	
 	glutSwapBuffers();
+
+	updateTitle();
 }
 
 void reshape(int W, int H) {
@@ -324,7 +301,7 @@ void reshape(int W, int H) {
 
 void animate() 
 {
-	timeCounter += 0.01f;
+	//timeCounter = clock()/CLOCKS_PER_SEC;
 
 	glutPostRedisplay();
 }
@@ -369,14 +346,28 @@ void printHelp(){
 	cout << "Use mouse wheel or '+'/'-' to change blending (works when implemented)."<< endl;
 }
 
+vec3 generateRandomJellyfishPosition() {
+	unsigned int x = rand() % STEPS_PER_DIRECTION; 
+	unsigned int z = rand() % STEPS_PER_DIRECTION;
+	float height = ((rand() % 1000) * MAX_SPAWN_HEIGHT)/999;
+	return cubeOrigin + vec3(x*MAX_SCALE,height, z*MAX_SCALE);
+}
+
 void initJellys()
 {
 	jellys = vector<Jellyfish>();
 
-	Jellyfish newJelly(vec3(0,0,0), vec3(0,0,0),vec3(0,1,0), vec3(0.1,0.1,0.1), &indices[0], indices.size(), &tentacleIndices[0], tentacleIndices.size(), modelViewUniform, tentacleModelviewUniform);
+	for(int i = 0; i < JELLYFISHES; i++) {
+		vec3 position = generateRandomJellyfishPosition();
+		float scaleFactor = 0.1;
 
-	jellys.push_back(newJelly);
+		Jellyfish newJelly(position, vec3(0,0,0),vec3(0,SPEED,0), vec3(scaleFactor,scaleFactor,scaleFactor), &indices[0], indices.size(), &tentacleIndices[0], tentacleIndices.size(), modelViewUniform, tentacleModelviewUniform);
+		jellys.push_back(newJelly);
+	}
+
+
 }
+
 
 int main(int argc, char* argv[]) {
 	printHelp();
@@ -412,10 +403,6 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 
 	loadShader();
-<<<<<<< HEAD
-=======
-	char * mesh1 = "semisphere.obj";
->>>>>>> a6b3cb81d48864fa616a1d90a018e5dac05f7c7f
 
 	char * jellyMesh =  "jellyfish_triang.obj";
 	char * tentacleMesh =   "jellyfish-tentacles_triang.obj";

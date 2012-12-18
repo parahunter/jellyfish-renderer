@@ -11,6 +11,7 @@ in vec3 normal;
 out vec4 colorV;
 
 float base_transl = 0.2;
+float border_transl = 0.8;
 
 void main (void) 
 {
@@ -19,9 +20,10 @@ void main (void)
 	
 	float translucency = pow(1 - abs(dot(normalize(normTransformed), vec3(0.0,0.0,1.0))),2) ;
 	
-	translucency = (translucency + base_transl)/(1+base_transl);
-    
-	colorV = vec4(1.0, 0.0,0.0, translucency);
+	  
+	float fin_translucency = translucency*border_transl + (1 - translucency)*base_transl;
+
+	colorV = vec4(1.0, 0.0,0.0, fin_translucency);
 
 	//woobliness
 	float maxY = 26;

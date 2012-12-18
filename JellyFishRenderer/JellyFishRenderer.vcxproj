@@ -13,10 +13,8 @@
   <ItemGroup>
     <None Include="head.frag" />
     <None Include="head.vert" />
-    <None Include="JellyFishRenderer.aps" />
     <None Include="tentacles.frag" />
     <None Include="tentacles.vert" />
-    <None Include="untitled.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Angel\InitShader.cpp" />
