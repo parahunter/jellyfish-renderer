@@ -1,7 +1,5 @@
 // 02561-03-01
 
-#define JELLYFISHES 100
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -13,26 +11,13 @@
 
 #include "Angel\obj_reader.h"
 #include "Jellyfish.h"
+#include "parameters.h";
 
 using namespace std;
 using namespace Angel;
 
-const float SPEED = 100.0f;
-const float MIN_SCALE = 25.0f;
-const float MAX_HEIGHT = 2000.0f;
-// cube for generating jellies
-const float MAX_SCALE = 50.0f;
-const unsigned int STEPS_PER_DIRECTION = 10;
-const float MAX_SPAWN_HEIGHT = 1000.f;
-const vec3 cubeOrigin(-MAX_SCALE*0.5*STEPS_PER_DIRECTION, -MAX_SPAWN_HEIGHT ,-MAX_SCALE*0.5*STEPS_PER_DIRECTION);
-
-// end of cube generator
-const vec4 BACKGROUND = vec4(93.0/255,145.0/255,201.0/255,1.0);
-int WINDOW_WIDTH = 800;
-int WINDOW_HEIGHT = 800;
-
 //jelly
-GLuint shaderProgram, tentacleShaderProgram;
+GLuint shaderProgram, tentacleShaderProgram, skyShaderProgram;
 GLuint projectionUniform,
 	modelViewUniform,
 	timeUniform;
@@ -51,6 +36,14 @@ GLuint tentacleVertexArrayObject,
 	tentacleTimeUniform,
 	tentaclePhaseShiftUniform,
 	tentacleVertexBuffer;
+
+//sky
+GLuint skyModelviewUniform,
+	skyProjectionUniform,
+	skyPositionAttribute;
+GLuint skyVertexArrayObject;
+
+
 /*
 struct Vertex {
     vec3 position1;
@@ -61,8 +54,12 @@ struct Vertex {
 */
 vector<unsigned int> indices;
 vector<unsigned int> tentacleIndices;
+vector<unsigned int> skyIndices;
 
 vector<Jellyfish> jellys;
+
+int WINDOW_WIDTH = 800;
+int WINDOW_HEIGHT = 800;
 
 vec2 sphericalCoordinates; // two first components of spherical coordinates (azimuth and elevation)
 float dist = 100; // last component of spherical coordinates
@@ -70,34 +67,9 @@ vec2 angleOffset;
 vec2 mousePos;
 double timeCounter = 0.0;
 
-
 void loadShader();
 void display();
 vec3 generateRandomJellyfishPosition();
-
-/*
-vector<Vertex> interleaveData(vector<float> &position, vector<float> &color, vector<float> &position2, vector<float> &color2){
-	vector<Vertex> interleavedVertexData;
-	for (int i=0;i<position.size();i=i+3){
-		vec3 positionVec(position[i],position[i+1],position[i+2]);
-		vec3 colorVec(color[i],color[i+1],color[i+2]);
-		vec3 positionVec2(position2[i],position2[i+1],position2[i+2]);
-		vec3 colorVec2(color2[i],color2[i+1],color2[i+2]);
-
-		Vertex v;
-		
-		= {
-			positionVec,
-			colorVec,
-			positionVec2,
-			colorVec2
-		};
-		
-		interleavedVertexData.push_back(v);
-	}
-	return interleavedVertexData;
-}
-*/
 
 void uploadData(vector<Vertex> &vertexData, vector<Vertex> &tentacleVertexData)
 {
@@ -134,26 +106,23 @@ void uploadData(vector<Vertex> &vertexData, vector<Vertex> &tentacleVertexData)
 
 }
 
-vector<Vertex> initData(char * mesh1, vector<unsigned int> &indices){
-	vector<Vertex> rest; 
-		indices.clear(); // this avoid loading indices multiple times
-		cout << "Loading file "<<mesh1<<endl;
+void loadMesh(char * meshPath, vector<Vertex> & vertices, vector<unsigned int> &indices){
+	indices.clear(); // this avoid loading indices multiple times
+	cout << "Loading file "<<meshPath<<endl;
+	bool res = readOBJFile(meshPath, vertices, indices);
+	if (!res){
+		cout << "Cannot read " << meshPath << flush<<endl;
+		exit(1);
+	}
 	
-		bool res = readOBJFile(mesh1, rest);
-		if (!res){
-			cout << "Cannot read " << mesh1 << flush<<endl;
-			exit(1);
-		}
-
-		cout << "*" << rest.size();
-	
+	/*
 	//indices are trivially rendered
 	for(int i = 0; i < rest.size(); i++) {
 			indices.push_back(i);
 	}
 
 	//test for having only triangles.
-/*	if(indices.size() % 3 == 1) {
+	if(indices.size() % 3 == 1) {
 			indices.push_back(0);
 			indices.push_back(1);
 	} else if(indices.size() % 3 == 2) {
@@ -161,11 +130,6 @@ vector<Vertex> initData(char * mesh1, vector<unsigned int> &indices){
 	}
 
 	*/
-	
-	//cout << "Interleaving data" << endl;
-	//vector<Vertex> interleavedVertexData = interleaveData(position[0], color[0], position[1], color[1]);
-	
-	return rest;
 }
 
 void loadShader()
@@ -230,15 +194,42 @@ void loadShader()
 
 }
 
-void updateTitle(){
-	static int count = 0;
-	if (count == 10){
-		char buffer[50];
-	
-		glutSetWindowTitle(buffer);
-		count = 0;
+void initSkyShader() {
+	skyShaderProgram = InitShader("sky.vert",  "sky.frag", "fragColor");
+	skyProjectionUniform = glGetUniformLocation(skyShaderProgram, "projection");
+	if (skyProjectionUniform == GL_INVALID_INDEX) {
+		cerr << "Shader did not contain/use the 'projection' uniform."<<endl;
 	}
-	count++;
+
+	skyModelviewUniform = glGetUniformLocation(skyShaderProgram, "modelView");
+	if (skyModelviewUniform == GL_INVALID_INDEX) {
+		cerr << "Shader did not contain/use the 'modelView' uniform."<<endl;
+	}
+	skyPositionAttribute = glGetAttribLocation(skyShaderProgram, "position"); 
+	if (skyPositionAttribute == GL_INVALID_INDEX) {
+		cerr << "Shader did not contain/use the 'position' attribute." << endl;
+	}
+}
+
+void loadSkyMesh() {
+	vector<Vertex> vertices;
+	loadMesh("sphere.obj",vertices, skyIndices);
+	const int size = vertices.size();
+	vec3* vertArray = new vec3[size];
+	for(int i = 0; i < vertices.size(); i++) {
+		vertArray[i] = vertices.at(i).position;
+	}
+	GLuint vertexBuffer;
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec3), vertArray, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &skyVertexArrayObject);
+    glBindVertexArray(skyVertexArrayObject);
+
+	glEnableVertexAttribArray(skyPositionAttribute);
+    glVertexAttribPointer(skyPositionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (const GLvoid *)0);
+
 }
 
 void display() 
@@ -252,15 +243,22 @@ void display()
 
 	mat4 view = Translate(0,0,-dist) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
 
-	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 1000);
+	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 10000);
 
-	glDisable(GL_DEPTH_TEST);
-
+	
+	glDisable(GL_DEPTH_TEST);	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//amazing stuff will happen here!!!
 	
+	
+	glBindVertexArray(skyVertexArrayObject);
+	glUseProgram(skyShaderProgram);
+	glUniformMatrix4fv(skyProjectionUniform, 1, GL_TRUE, projection);
+	glUniformMatrix4fv(skyModelviewUniform, 1, GL_TRUE, view*Scale(1000));
+	glDrawElements(GL_TRIANGLES, skyIndices.size(), GL_UNSIGNED_INT, &skyIndices[0]);
+
     //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 		
 	for(int i = 0 ; i < jellys.size() ; i++)
@@ -272,8 +270,7 @@ void display()
 		glUseProgram(shaderProgram);
 		glUniformMatrix4fv(projectionUniform, 1, GL_TRUE, projection);
 		glUniform1f(timeUniform, (float)timeCounter);
-
-
+		
 		jellys.at(i).update(deltatime,view);
 
 		glBindVertexArray(tentacleVertexArrayObject);
@@ -289,8 +286,6 @@ void display()
 	glDisable(GL_BLEND);
 	
 	glutSwapBuffers();
-
-	updateTitle();
 }
 
 void reshape(int W, int H) {
@@ -329,7 +324,11 @@ void motion(int x, int y) {
 
 void mouseWheel(int button, int dir, int x, int y) 
 {
-
+	if(dir > 0) {
+		dist -= 5;
+	} else {
+		dist += 5;
+	}
 }
 
 void keyboard(unsigned char key, int x, int y){
@@ -343,7 +342,7 @@ void keyboard(unsigned char key, int x, int y){
 
 void printHelp(){
 	cout << "Use mouse drag to rotate around head."<< endl;
-	cout << "Use mouse wheel or '+'/'-' to change blending (works when implemented)."<< endl;
+	//cout << "Use mouse wheel or '+'/'-' to change blending (works when implemented)."<< endl;
 }
 
 vec3 generateRandomJellyfishPosition() {
@@ -364,7 +363,6 @@ void initJellys()
 		Jellyfish newJelly(position, vec3(0,0,0),vec3(0,SPEED,0), vec3(scaleFactor,scaleFactor,scaleFactor), &indices[0], indices.size(), &tentacleIndices[0], tentacleIndices.size(), modelViewUniform, tentacleModelviewUniform);
 		jellys.push_back(newJelly);
 	}
-
 
 }
 
@@ -402,14 +400,21 @@ int main(int argc, char* argv[]) {
 
 	glEnable(GL_DEPTH_TEST);
 
+	initSkyShader();
+	loadSkyMesh();
+
 	loadShader();
 
 	char * jellyMesh =  "jellyfish_triang.obj";
 	char * tentacleMesh =   "jellyfish-tentacles_triang.obj";
 
-	uploadData(initData(jellyMesh, indices), initData(tentacleMesh, tentacleIndices));
+	vector<Vertex> jellyVertices;
+	loadMesh(jellyMesh,jellyVertices,indices);
 	
-	initJellys();
+	vector<Vertex> tentacleVertices;
+	loadMesh(tentacleMesh,tentacleVertices,tentacleIndices);
 
+	uploadData(jellyVertices,tentacleVertices);	
+	initJellys();
 	glutMainLoop();
 }

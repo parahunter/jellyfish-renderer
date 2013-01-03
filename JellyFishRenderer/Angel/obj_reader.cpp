@@ -1,6 +1,7 @@
 #include "obj_reader.h"
 #include<iostream>
 #include<fstream>
+#include<algorithm>
 
 using namespace std;
 using namespace Angel;
@@ -14,7 +15,7 @@ vec3 splitMyLine(string line);
 TriangleFace splitMyFace(char *line, size_t indexFrom);
 //void splitPolygon(char *line, std::vector<unsigned int> &vector);
 
-bool readOBJFile(const char* filename, vector<Vertex> & result){
+bool readOBJFile(const char* filename, vector<Vertex> & result, vector<unsigned int> & indices){
 	result.clear();
 	ifstream myReadFile;
 	myReadFile.open(filename);
@@ -40,8 +41,15 @@ bool readOBJFile(const char* filename, vector<Vertex> & result){
 					TriangleFace t = splitMyFace(line,2);
 					for(int i = 0; i < 3; i++) {
 						Vertex v = { vertices.at(t.i[i]-1), normals.at(t.n[i]-1) };
-						result.push_back(v);
-					//	cout << "Vertex< position: " << v.position << " normal: " << v.normal <<">" << endl;
+						vector<Vertex>::iterator it = find(result.begin(), result.end(), v);
+						if(it != result.end()) {
+							//cout << "FOUND! " << result.size()<< " " << std::distance(result.begin(), it) <<endl;
+							indices.push_back(std::distance(result.begin(), it));
+						} else {
+							result.push_back(v);
+							indices.push_back(result.size()-1);
+						}
+						//cout << "Vertex< position: " << v.position << " normal: " << v.normal <<">" << endl;
 					}
 				} else {
 					//cout << "noone";

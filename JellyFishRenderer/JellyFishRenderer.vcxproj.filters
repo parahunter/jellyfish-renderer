@@ -5,6 +5,10 @@
     <None Include="head.frag" />
     <None Include="tentacles.frag" />
     <None Include="tentacles.vert" />
+    <None Include="Angel\head.vert" />
+    <None Include="Angel\head.frag" />
+    <None Include="sky.vert" />
+    <None Include="sky.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -39,6 +43,9 @@
       <Filter>Angel</Filter>
     </ClInclude>
     <ClInclude Include="Jellyfish.h" />
+    <ClInclude Include="Angel\parameters.h" />
+    <ClInclude Include="Angel\jellyfish_parameters.h" />
+    <ClInclude Include="parameters.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Angel">

@@ -11,8 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Angel\head.frag" />
+    <None Include="Angel\head.vert" />
     <None Include="head.frag" />
     <None Include="head.vert" />
+    <None Include="sky.frag" />
+    <None Include="sky.vert" />
     <None Include="tentacles.frag" />
     <None Include="tentacles.vert" />
   </ItemGroup>
@@ -26,11 +30,14 @@
   <ItemGroup>
     <ClInclude Include="Angel\Angel.h" />
     <ClInclude Include="Angel\CheckError.h" />
+    <ClInclude Include="Angel\jellyfish_parameters.h" />
     <ClInclude Include="Angel\mat.h" />
     <ClInclude Include="Angel\obj_reader.h" />
+    <ClInclude Include="Angel\parameters.h" />
     <ClInclude Include="Angel\vec.h" />
     <ClInclude Include="Angel\vtk_reader.h" />
     <ClInclude Include="Jellyfish.h" />
+    <ClInclude Include="parameters.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{880E6326-CDA4-420A-9426-83C102504E6A}</ProjectGuid>
@@ -80,6 +87,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

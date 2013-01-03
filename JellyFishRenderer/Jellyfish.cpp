@@ -1,5 +1,5 @@
 #include "Jellyfish.h"
-
+#include "parameters.h"
 
 Jellyfish::Jellyfish(vec3& position, vec3& rotation, vec3& velocity, vec3& scale, void* mesh, int bufferSize, void* tentacleMesh, int tentacleBufferSize, GLint modelviewUniform, GLint tentacleModelViewUniform)
 	: 
@@ -7,7 +7,6 @@ position(position), rotation(rotation), velocity(velocity), scale(scale), mesh(m
 {
 
 }
-
 
 void Jellyfish::update(float deltatime, mat4 &view)
 {
@@ -19,9 +18,6 @@ void Jellyfish::update(float deltatime, mat4 &view)
 	
 	glDrawElements(GL_TRIANGLES, bufferSize, GL_UNSIGNED_INT, mesh);
 }
-
-const int TENTACLES_OUTER_CIRCLE = 10;
-const int TENTACLES_INNER_CIRCLE = 8;
 
 void Jellyfish::updateTentacles(mat4 &view, GLint phaseShiftUniform)
 {
