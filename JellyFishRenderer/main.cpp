@@ -8,50 +8,39 @@
 #include <GL/freeglut.h>
 
 #include "Angel\Angel.h"
-
 #include "Angel\obj_reader.h"
+
 #include "Jellyfish.h"
 #include "parameters.h";
 
 using namespace std;
 using namespace Angel;
 
-//jelly
-GLuint shaderProgram, tentacleShaderProgram, skyShaderProgram;
-GLuint projectionUniform,
-	modelViewUniform,
-	timeUniform;
-GLuint positionAttribute,
-	normalAttribute;
-GLuint vertexArrayObject,
-	vertexBuffer;
 
+struct Shader {
+	GLuint shaderProgram;
+	GLuint timeUniform;
+	GLuint projectionUniform;
+	GLuint modelViewUniform;
+	GLuint positionAttribute;
+	GLuint normalAttribute;
+	GLuint phaseUniform;
+};
+
+
+Shader headShader,tentacleShader,skyShader;
+
+//head
+GLuint headVertexArrayObject;
 
 //tentacle
-GLuint tentaclePositionAttribute,
-	tentacleNormalAttribute,
-	tentacleModelviewUniform,
-	tentacleProjectionUniform;
-GLuint tentacleVertexArrayObject,
-	tentacleTimeUniform,
-	tentaclePhaseShiftUniform,
-	tentacleVertexBuffer;
+GLuint tentacleVertexArrayObject;
 
 //sky
-GLuint skyModelviewUniform,
-	skyProjectionUniform,
-	skyPositionAttribute;
 GLuint skyVertexArrayObject;
 
 
-/*
-struct Vertex {
-    vec3 position1;
-	vec3 color1;
-	vec3 position2;
-	vec3 color2;
-};
-*/
+
 vector<unsigned int> indices;
 vector<unsigned int> tentacleIndices;
 vector<unsigned int> skyIndices;
@@ -67,43 +56,29 @@ vec2 angleOffset;
 vec2 mousePos;
 double timeCounter = 0.0;
 
-void loadShader();
 void display();
 vec3 generateRandomJellyfishPosition();
 
-void uploadData(vector<Vertex> &vertexData, vector<Vertex> &tentacleVertexData)
-{
-	    
+GLuint loadData(vector<Vertex> &vertexData, Shader & shader)
+{    
 	GLuint stride = sizeof(Vertex);
+	GLuint vertexArrayObject;
 
-	//jelly
 	glGenVertexArrays(1, &vertexArrayObject);
     glBindVertexArray(vertexArrayObject);
-    
+
+    GLuint vertexBuffer;
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(Vertex), vertexData[0].position, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(positionAttribute);
-	glEnableVertexAttribArray(normalAttribute);
+	glEnableVertexAttribArray(shader.positionAttribute);
+	glEnableVertexAttribArray(shader.normalAttribute);
 		
-	glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid *)(0));
-	glVertexAttribPointer(normalAttribute , 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid *)(sizeof(vec3)));
+	glVertexAttribPointer(shader.positionAttribute, 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid *)(0));
+	glVertexAttribPointer(shader.normalAttribute, 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid *)(sizeof(vec3)));
 
-	//tentacls
-	glGenVertexArrays(1, &tentacleVertexArrayObject);
-    glBindVertexArray(tentacleVertexArrayObject);
-    
-    glGenBuffers(1, &tentacleVertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, tentacleVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, tentacleVertexData.size() * sizeof(Vertex), tentacleVertexData[0].position, GL_STATIC_DRAW);
-    
-	glEnableVertexAttribArray(tentaclePositionAttribute);
-	glEnableVertexAttribArray(tentacleNormalAttribute);
-		
-	glVertexAttribPointer(tentaclePositionAttribute, 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid *)(0));
-	glVertexAttribPointer(tentacleNormalAttribute , 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid *)(sizeof(vec3)));
-
+	return vertexArrayObject;
 }
 
 void loadMesh(char * meshPath, vector<Vertex> & vertices, vector<unsigned int> &indices){
@@ -132,109 +107,52 @@ void loadMesh(char * meshPath, vector<Vertex> & vertices, vector<unsigned int> &
 	*/
 }
 
-void loadShader()
+
+void loadShader(Shader & shader, char * vertex, char* fragment)
 {
-	tentacleShaderProgram = InitShader("tentacles.vert", "tentacles.frag", "tentacleFragColor");
+	shader.shaderProgram = InitShader(vertex, fragment, "fragColor");
 
-	//tentacles
-	tentacleTimeUniform = glGetUniformLocation(tentacleShaderProgram, "time");
-	if (tentacleTimeUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'time' uniform."<<endl;
-	}
-	tentacleProjectionUniform = glGetUniformLocation(tentacleShaderProgram, "projection");
-	if (tentacleProjectionUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'projection' uniform."<<endl;
-	}
-
-	tentacleModelviewUniform = glGetUniformLocation(tentacleShaderProgram, "modelView");
-	if (tentacleModelviewUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'modelView' uniform."<<endl;
-	}
-
-	tentaclePositionAttribute = glGetAttribLocation(tentacleShaderProgram, "position"); 
-	if (tentaclePositionAttribute == GL_INVALID_INDEX){
-		cerr << "Shader did not contain/use the 'position' attribute." << endl;
+	shader.timeUniform = glGetUniformLocation(shader.shaderProgram, "time");
+	if (shader.timeUniform == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'time' uniform."<<endl;
 	}
 	
-	tentacleNormalAttribute = glGetAttribLocation(tentacleShaderProgram, "normal"); 
-	if (tentacleNormalAttribute == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
+	shader.projectionUniform = glGetUniformLocation(shader.shaderProgram, "projection");
+	if (shader.projectionUniform == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'projection' uniform."<<endl;
 	}
 
-	tentaclePhaseShiftUniform = glGetUniformLocation(tentacleShaderProgram, "phaseShift"); 
-	if (tentaclePhaseShiftUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
+	shader.modelViewUniform = glGetUniformLocation(shader.shaderProgram, "modelView");
+	if (shader.modelViewUniform == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'modelView' uniform."<<endl;
+	}
+
+	shader.positionAttribute = glGetAttribLocation(shader.shaderProgram, "position"); 
+	if (shader.positionAttribute == GL_INVALID_INDEX){
+		cerr << "Shader "<<vertex<<" did not contain/use the 'position' attribute." << endl;
 	}
 	
-	shaderProgram = InitShader("head.vert",  "head.frag", "fragColor");
-
-	timeUniform = glGetUniformLocation(shaderProgram, "time");
-	if (timeUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'time' uniform."<<endl;
+	shader.normalAttribute = glGetAttribLocation(shader.shaderProgram, "normal"); 
+	if (shader.normalAttribute == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'normal' attribute." << endl;
 	}
 
-	projectionUniform = glGetUniformLocation(shaderProgram, "projection");
-	if (projectionUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'projection' uniform."<<endl;
-	}
-
-	modelViewUniform = glGetUniformLocation(shaderProgram, "modelView");
-	if (modelViewUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'modelView' uniform."<<endl;
-	}
-	positionAttribute = glGetAttribLocation(shaderProgram, "position"); 
-	if (positionAttribute == GL_INVALID_INDEX){
-		cerr << "Shader did not contain/use the 'position' attribute." << endl;
-	}
-	
-	normalAttribute = glGetAttribLocation(shaderProgram, "normal"); 
-	if (normalAttribute == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'normal' attribute." << endl;
-	}
-
-}
-
-void initSkyShader() {
-	skyShaderProgram = InitShader("sky.vert",  "sky.frag", "fragColor");
-	skyProjectionUniform = glGetUniformLocation(skyShaderProgram, "projection");
-	if (skyProjectionUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'projection' uniform."<<endl;
-	}
-
-	skyModelviewUniform = glGetUniformLocation(skyShaderProgram, "modelView");
-	if (skyModelviewUniform == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'modelView' uniform."<<endl;
-	}
-	skyPositionAttribute = glGetAttribLocation(skyShaderProgram, "position"); 
-	if (skyPositionAttribute == GL_INVALID_INDEX) {
-		cerr << "Shader did not contain/use the 'position' attribute." << endl;
+	shader.phaseUniform = glGetUniformLocation(shader.shaderProgram, "phaseShift"); 
+	if (shader.phaseUniform == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'phase' uniform." << endl;
 	}
 }
 
 void loadSkyMesh() {
 	vector<Vertex> vertices;
 	loadMesh("sphere.obj",vertices, skyIndices);
-	const int size = vertices.size();
-	vec3* vertArray = new vec3[size];
-	for(int i = 0; i < vertices.size(); i++) {
-		vertArray[i] = vertices.at(i).position;
-	}
-	GLuint vertexBuffer;
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec3), vertArray, GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &skyVertexArrayObject);
-    glBindVertexArray(skyVertexArrayObject);
-
-	glEnableVertexAttribArray(skyPositionAttribute);
-    glVertexAttribPointer(skyPositionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (const GLvoid *)0);
+	skyVertexArrayObject = loadData(vertices,skyShader);
 
 }
 
 void display() 
 {	   
-	glClearColor(BACKGROUND.x,BACKGROUND.y,BACKGROUND.z,BACKGROUND.w);
+	glClearColor(0.0,0.0,0.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	double currentTime = ((double)clock())/CLOCKS_PER_SEC;
@@ -254,34 +172,33 @@ void display()
 	
 	
 	glBindVertexArray(skyVertexArrayObject);
-	glUseProgram(skyShaderProgram);
-	glUniformMatrix4fv(skyProjectionUniform, 1, GL_TRUE, projection);
-	glUniformMatrix4fv(skyModelviewUniform, 1, GL_TRUE, view*Scale(1000));
+	glUseProgram(skyShader.shaderProgram);
+	glUniformMatrix4fv(skyShader.projectionUniform, 1, GL_TRUE, projection);
+	glUniformMatrix4fv(skyShader.modelViewUniform, 1, GL_TRUE, view*Scale(1000));
 	glDrawElements(GL_TRIANGLES, skyIndices.size(), GL_UNSIGNED_INT, &skyIndices[0]);
 
-    //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
-		
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
+	
+	
 	for(int i = 0 ; i < jellys.size() ; i++)
 	{
 		if(jellys.at(i).position.y > MAX_HEIGHT) {
 			jellys.at(i).position = generateRandomJellyfishPosition();
 		}
-		glBindVertexArray(vertexArrayObject);
-		glUseProgram(shaderProgram);
-		glUniformMatrix4fv(projectionUniform, 1, GL_TRUE, projection);
-		glUniform1f(timeUniform, (float)timeCounter);
+		glBindVertexArray(headVertexArrayObject);
+		glUseProgram(headShader.shaderProgram);
+		glUniformMatrix4fv(headShader.projectionUniform, 1, GL_TRUE, projection);
+		glUniform1f(headShader.timeUniform, (float)timeCounter);
 		
 		jellys.at(i).update(deltatime,view);
 
 		glBindVertexArray(tentacleVertexArrayObject);
-		glUseProgram(tentacleShaderProgram);
-		glUniform1f(tentacleTimeUniform, (float)timeCounter);
-		glUniformMatrix4fv(tentacleProjectionUniform, 1, GL_TRUE, projection);
-		
-		jellys.at(i).updateTentacles(view, tentaclePhaseShiftUniform);
-
+		glUseProgram(tentacleShader.shaderProgram);
+		glUniform1f(tentacleShader.timeUniform, (float)timeCounter);
+		glUniformMatrix4fv(tentacleShader.projectionUniform, 1, GL_TRUE, projection);
+		jellys.at(i).updateTentacles(view, tentacleShader.phaseUniform);
 	}
-
+	
 	glFlush();
 	glDisable(GL_BLEND);
 	
@@ -360,7 +277,7 @@ void initJellys()
 		vec3 position = generateRandomJellyfishPosition();
 		float scaleFactor = 0.1;
 
-		Jellyfish newJelly(position, vec3(0,0,0),vec3(0,SPEED,0), vec3(scaleFactor,scaleFactor,scaleFactor), &indices[0], indices.size(), &tentacleIndices[0], tentacleIndices.size(), modelViewUniform, tentacleModelviewUniform);
+		Jellyfish newJelly(position, vec3(0,0,0),vec3(0,SPEED,0), vec3(scaleFactor,scaleFactor,scaleFactor), &indices[0], indices.size(), &tentacleIndices[0], tentacleIndices.size(), headShader.modelViewUniform, tentacleShader.modelViewUniform);
 		jellys.push_back(newJelly);
 	}
 
@@ -400,21 +317,23 @@ int main(int argc, char* argv[]) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	initSkyShader();
+	loadShader(headShader,"head.vert","head.frag");
+	loadShader(tentacleShader,"tentacles.vert","tentacles.frag");
+	loadShader(skyShader,"sky.vert","sky.frag");
+
 	loadSkyMesh();
-
-	loadShader();
-
+	
 	char * jellyMesh =  "jellyfish_triang.obj";
 	char * tentacleMesh =   "jellyfish-tentacles_triang.obj";
 
 	vector<Vertex> jellyVertices;
 	loadMesh(jellyMesh,jellyVertices,indices);
-	
+	headVertexArrayObject = loadData(jellyVertices,headShader);
+
 	vector<Vertex> tentacleVertices;
 	loadMesh(tentacleMesh,tentacleVertices,tentacleIndices);
+	tentacleVertexArrayObject = loadData(tentacleVertices, tentacleShader);
 
-	uploadData(jellyVertices,tentacleVertices);	
 	initJellys();
 	glutMainLoop();
 }
