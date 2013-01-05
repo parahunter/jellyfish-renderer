@@ -4,7 +4,19 @@
 class Jellyfish
 {
 public:
-	Jellyfish(vec3& position, vec3& rotation, vec3& velocity, vec3& scale, void* mesh, int bufferSize, void* tentacleMesh, int tentacleBufferSize, GLint modelviewUniform, GLint tentacleModelViewUniform);
+	Jellyfish(vec3& position, 
+		      vec3& rotation, 
+			  vec3& velocity, 
+			  vec3& scale, 
+			  vec3& color, 
+			  void* mesh, 
+			  int bufferSize, 
+			  void* tentacleMesh, 
+			  int tentacleBufferSize, 
+			  GLint modelviewUniform, 
+			  GLint tentacleModelViewUniform,
+  			  GLint colorUniform, 
+			  GLint tentacleColorUniform);
 	~Jellyfish(void);
 	void update(float deltatime, mat4 &view);
 	void updateTentacles(mat4 &view, GLint phaseUniform);
@@ -15,14 +27,14 @@ public:
 	int tentacleBufferSize;
 	GLuint modelviewUniform;
 	GLuint tentacleModelViewUniform;
-	
+	GLuint headColorUniform;
+	GLuint tentacleColorUniform;
 
+	
 	vec3 position;
 	vec3 rotation;
 	vec3 velocity;
 	vec3 scale;
 	vec3 baseColor;
-	vec3 borderColor;
-
 };
 

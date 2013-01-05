@@ -12,6 +12,7 @@
 
 #include "Jellyfish.h"
 #include "parameters.h";
+#include "HSVColorPicker.h"
 
 using namespace std;
 using namespace Angel;
@@ -25,6 +26,7 @@ struct Shader {
 	GLuint positionAttribute;
 	GLuint normalAttribute;
 	GLuint phaseUniform;
+	GLuint colorUniform;
 };
 
 
@@ -32,20 +34,17 @@ Shader headShader,tentacleShader,skyShader;
 
 //head
 GLuint headVertexArrayObject;
-
 //tentacle
 GLuint tentacleVertexArrayObject;
-
 //sky
 GLuint skyVertexArrayObject;
-
-
 
 vector<unsigned int> indices;
 vector<unsigned int> tentacleIndices;
 vector<unsigned int> skyIndices;
 
 vector<Jellyfish> jellys;
+HSVColorPicker colorPicker;
 
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 800;
@@ -111,6 +110,16 @@ void loadMesh(char * meshPath, vector<Vertex> & vertices, vector<unsigned int> &
 void loadShader(Shader & shader, char * vertex, char* fragment)
 {
 	shader.shaderProgram = InitShader(vertex, fragment, "fragColor");
+	
+	shader.positionAttribute = glGetAttribLocation(shader.shaderProgram, "position"); 
+	if (shader.positionAttribute == GL_INVALID_INDEX){
+		cerr << "Shader "<<vertex<<" did not contain/use the 'position' attribute." << endl;
+	}
+	
+	shader.normalAttribute = glGetAttribLocation(shader.shaderProgram, "normal"); 
+	if (shader.normalAttribute == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'normal' attribute." << endl;
+	}
 
 	shader.timeUniform = glGetUniformLocation(shader.shaderProgram, "time");
 	if (shader.timeUniform == GL_INVALID_INDEX) {
@@ -127,27 +136,22 @@ void loadShader(Shader & shader, char * vertex, char* fragment)
 		cerr << "Shader "<<vertex<<" did not contain/use the 'modelView' uniform."<<endl;
 	}
 
-	shader.positionAttribute = glGetAttribLocation(shader.shaderProgram, "position"); 
-	if (shader.positionAttribute == GL_INVALID_INDEX){
-		cerr << "Shader "<<vertex<<" did not contain/use the 'position' attribute." << endl;
-	}
-	
-	shader.normalAttribute = glGetAttribLocation(shader.shaderProgram, "normal"); 
-	if (shader.normalAttribute == GL_INVALID_INDEX) {
-		cerr << "Shader "<<vertex<<" did not contain/use the 'normal' attribute." << endl;
-	}
-
 	shader.phaseUniform = glGetUniformLocation(shader.shaderProgram, "phaseShift"); 
 	if (shader.phaseUniform == GL_INVALID_INDEX) {
 		cerr << "Shader "<<vertex<<" did not contain/use the 'phase' uniform." << endl;
 	}
+
+	shader.colorUniform = glGetUniformLocation(shader.shaderProgram, "color"); 
+	if (shader.colorUniform == GL_INVALID_INDEX) {
+		cerr << "Shader "<<vertex<<" did not contain/use the 'color' uniform." << endl;
+	}
 }
 
-void loadSkyMesh() {
+void loadSkyMesh() 
+{
 	vector<Vertex> vertices;
 	loadMesh("sphere.obj",vertices, skyIndices);
 	skyVertexArrayObject = loadData(vertices,skyShader);
-
 }
 
 void display() 
@@ -272,17 +276,31 @@ vec3 generateRandomJellyfishPosition() {
 void initJellys()
 {
 	jellys = vector<Jellyfish>();
+	colorPicker = HSVColorPicker();
 
 	for(int i = 0; i < JELLYFISHES; i++) {
 		vec3 position = generateRandomJellyfishPosition();
 		float scaleFactor = 0.1;
 
-		Jellyfish newJelly(position, vec3(0,0,0),vec3(0,SPEED,0), vec3(scaleFactor,scaleFactor,scaleFactor), &indices[0], indices.size(), &tentacleIndices[0], tentacleIndices.size(), headShader.modelViewUniform, tentacleShader.modelViewUniform);
+		vec3 color = colorPicker.PickColor();
+
+		Jellyfish newJelly(position,
+						   vec3(0,0,0),
+						   vec3(0,SPEED,0), 
+						   vec3(scaleFactor,scaleFactor,scaleFactor), 
+						   color, 
+						   &indices[0], 
+						   indices.size(), 
+						   &tentacleIndices[0], 
+						   tentacleIndices.size(), 
+						   headShader.modelViewUniform, 
+						   tentacleShader.modelViewUniform,
+						   headShader.colorUniform,
+						   tentacleShader.colorUniform);
+		
 		jellys.push_back(newJelly);
 	}
-
 }
-
 
 int main(int argc, char* argv[]) {
 	printHelp();

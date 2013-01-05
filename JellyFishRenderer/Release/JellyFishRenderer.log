@@ -1,17 +1,35 @@
-﻿Build started 1/4/2013 5:05:53 PM.
-     1>Project "C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
+﻿Build started 1/5/2013 12:07:53 PM.
+     1>Project "D:\AlexandersFolder\gitStuff\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\JellyFishRenderer.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         All outputs are up-to-date.
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt HSVColorPicker.cpp
+         HSVColorPicker.cpp
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\Angel\Angel.h(67): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(701): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(702): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(703): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(724): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(726): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(729): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\angel\mat.h(747): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
        Link:
-         All outputs are up-to-date.
-         JellyFishRenderer.vcxproj -> C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Release\JellyFishRenderer.exe
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\AlexandersFolder\gitStuff\jellyfish-renderer\Release\JellyFishRenderer.exe" /NOLOGO glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\JellyFishRenderer.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\AlexandersFolder\gitStuff\jellyfish-renderer\Release\JellyFishRenderer.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\AlexandersFolder\gitStuff\jellyfish-renderer\Release\JellyFishRenderer.lib" /MACHINE:X86 Release\InitShader.obj
+         Release\obj_reader.obj
+         Release\vtk_reader.obj
+         Release\HSVColorPicker.obj
+         Release\Jellyfish.obj
+         Release\main.obj
+         Generating code
+         Finished generating code
+         JellyFishRenderer.vcxproj -> D:\AlexandersFolder\gitStuff\jellyfish-renderer\Release\JellyFishRenderer.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\AlexandersFolder\gitStuff\jellyfish-renderer\Release\JellyFishRenderer.exe;#1" /manifest Release\JellyFishRenderer.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "Release\JellyFishRenderer.unsuccessfulbuild".
          Touching "Release\JellyFishRenderer.lastbuildstate".
-     1>Done Building Project "C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" (build target(s)).
+     1>Done Building Project "D:\AlexandersFolder\gitStuff\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.05
+Time Elapsed 00:00:01.14

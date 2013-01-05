@@ -24,6 +24,7 @@
     <ClCompile Include="Angel\InitShader.cpp" />
     <ClCompile Include="Angel\obj_reader.cpp" />
     <ClCompile Include="Angel\vtk_reader.cpp" />
+    <ClCompile Include="HSVColorPicker.cpp" />
     <ClCompile Include="Jellyfish.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -36,6 +37,7 @@
     <ClInclude Include="Angel\parameters.h" />
     <ClInclude Include="Angel\vec.h" />
     <ClInclude Include="Angel\vtk_reader.h" />
+    <ClInclude Include="HSVColorPicker.h" />
     <ClInclude Include="Jellyfish.h" />
     <ClInclude Include="parameters.h" />
   </ItemGroup>

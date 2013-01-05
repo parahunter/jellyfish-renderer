@@ -5,6 +5,7 @@ uniform mat4 projection;
 uniform mat4 modelView;
 uniform float time;
 uniform float phaseShift;
+uniform vec3 color;
 
 in vec3 position;
 in vec3 normal;
@@ -23,7 +24,7 @@ void main (void)
 	
 	translucency = (translucency + base_transl)/(1+base_transl);
     
-	colorV = vec4(1.0, 0.1,0.1, translucency);
+	colorV = vec4(color, translucency);
 
 	//woobliness
 	float maxY = 26;

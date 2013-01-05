@@ -22,6 +22,7 @@
       <Filter>Angel</Filter>
     </ClCompile>
     <ClCompile Include="Jellyfish.cpp" />
+    <ClCompile Include="HSVColorPicker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angel\Angel.h">
@@ -46,6 +47,7 @@
     <ClInclude Include="Angel\parameters.h" />
     <ClInclude Include="Angel\jellyfish_parameters.h" />
     <ClInclude Include="parameters.h" />
+    <ClInclude Include="HSVColorPicker.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Angel">
