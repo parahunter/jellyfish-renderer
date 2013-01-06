@@ -2,8 +2,37 @@
 #include <math.h>
 #include <random>
 
-HSVColorPicker::HSVColorPicker(void)
+HSVColorPicker::HSVColorPicker(float initialHue) : state(COLOR_SINGLE) , currentHue(initialHue)
 {
+
+}
+
+void HSVColorPicker::UpdateState()
+{
+	switch(state)
+	{
+	case COLOR_SINGLE:
+		state = COLOR_RANDOM;
+		break;
+	case COLOR_RANDOM:
+		state = COLOR_PULSATING;
+		break;
+	case COLOR_PULSATING:
+		state = COLOR_SINGLE;
+		break;
+	}
+}
+
+const float pulsatingSpeed = 10.f;
+void HSVColorPicker::UpdateColor(float deltaT)
+{
+	if(state == COLOR_PULSATING)
+	{
+		currentHue += pulsatingSpeed*deltaT;
+
+		if(currentHue > 360.f)
+			currentHue -= 360.f;
+	}
 
 }
 
@@ -66,7 +95,18 @@ vec3 HSVColorPicker::HSVToRGB(float h, float s, float v)
 
 vec3 HSVColorPicker::PickColor()
 {
-	return PickRandomColor();
+	switch(state)
+	{
+	case COLOR_SINGLE:
+		return HSVToRGB(currentHue, 1.f, 1.f);
+		break;
+	case COLOR_RANDOM:
+		return PickRandomColor();
+		break;
+	case COLOR_PULSATING:
+		return HSVToRGB(currentHue, 1.f, 1.f);
+		break;
+	}
 }
 
 vec3 HSVColorPicker::PickRandomColor()
@@ -76,6 +116,9 @@ vec3 HSVColorPicker::PickRandomColor()
 	return HSVToRGB(hue, 1., 1.);
 }
 
+HSVColorPicker::HSVColorPicker(void)
+{
+}
 
 HSVColorPicker::~HSVColorPicker(void)
 {

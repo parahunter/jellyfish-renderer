@@ -183,11 +183,20 @@ void display()
 
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 	
+	colorPicker.UpdateColor(deltatime);
+	vec3 color = colorPicker.PickColor();
 	
 	for(int i = 0 ; i < jellys.size() ; i++)
 	{
-		if(jellys.at(i).position.y > MAX_HEIGHT) {
+		if(colorPicker.state != COLOR_RANDOM)
+			jellys.at(i).baseColor = colorPicker.PickColor();
+
+		if(jellys.at(i).position.y > MAX_HEIGHT) 
+		{
 			jellys.at(i).position = generateRandomJellyfishPosition();
+
+			if(colorPicker.state == COLOR_RANDOM)
+				jellys.at(i).baseColor = colorPicker.PickColor();
 		}
 		glBindVertexArray(headVertexArrayObject);
 		glUseProgram(headShader.shaderProgram);
@@ -254,6 +263,20 @@ void mouseWheel(int button, int dir, int x, int y)
 
 void keyboard(unsigned char key, int x, int y){
 	// allow keyboard access if scroll wheel is unavailable
+	if(key == 'c')
+	{
+		colorPicker.UpdateState();
+
+		if(colorPicker.state == COLOR_RANDOM)
+		{
+			for(int i = 0 ; i < jellys.size() ; i++)
+			{
+				jellys[i].baseColor = colorPicker.PickColor();
+			}
+		}
+
+	}
+	
 	if (key == '+') {
 		mouseWheel(0, 1, 0,0 );
 	} else if (key == '-') {
@@ -276,7 +299,7 @@ vec3 generateRandomJellyfishPosition() {
 void initJellys()
 {
 	jellys = vector<Jellyfish>();
-	colorPicker = HSVColorPicker();
+	colorPicker = HSVColorPicker(0.f);
 
 	for(int i = 0; i < JELLYFISHES; i++) {
 		vec3 position = generateRandomJellyfishPosition();

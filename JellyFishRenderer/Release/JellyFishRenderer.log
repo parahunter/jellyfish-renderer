@@ -1,7 +1,7 @@
-﻿Build started 1/5/2013 12:07:53 PM.
+﻿Build started 1/6/2013 11:05:48 AM.
      1>Project "D:\AlexandersFolder\gitStuff\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Creating "Release\JellyFishRenderer.unsuccessfulbuild" because "AlwaysCreate" was specified.
+         Touching "Release\JellyFishRenderer.unsuccessfulbuild".
        ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt HSVColorPicker.cpp
          HSVColorPicker.cpp
@@ -21,6 +21,7 @@
          Release\Jellyfish.obj
          Release\main.obj
          Generating code
+     1>d:\alexandersfolder\gitstuff\jellyfish-renderer\jellyfishrenderer\hsvcolorpicker.cpp(110): warning C4715: 'HSVColorPicker::PickColor' : not all control paths return a value
          Finished generating code
          JellyFishRenderer.vcxproj -> D:\AlexandersFolder\gitStuff\jellyfish-renderer\Release\JellyFishRenderer.exe
        Manifest:
@@ -32,4 +33,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.14
+Time Elapsed 00:00:01.11
