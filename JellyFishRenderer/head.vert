@@ -11,19 +11,21 @@ in vec3 normal;
 
 out vec4 colorV;
 
-float base_transl = 0.2;
-float border_transl = 0.8;
+const float base_transl = 0.2;
+const float border_transl = 0.8;
+const float attentuation = 2.0;
+const vec3 viewDirection = vec3(0,0,1);
 
 void main (void) 
 {
 	//translusency
 	vec3 normTransformed = (modelView * vec4(normal, 0.0)).xyz;
 	
-	float translucency = pow(1 - abs(dot(normalize(normTransformed), vec3(0.0,0.0,1.0))),2) ;
+	float translucency = pow(1 - abs(dot(normalize(normTransformed), viewDirection)),attentuation) ;
 	  
 	float fin_translucency = translucency*border_transl + (1 - translucency)*base_transl;
 
-	colorV = vec4(color, fin_translucency);
+	colorV = vec4(color, fin_translucency);	
 
 	//woobliness
 	float maxY = 26;
