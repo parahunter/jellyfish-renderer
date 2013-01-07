@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JellyFishRenderer", "JellyFishRenderer\JellyFishRenderer.vcxproj", "{880E6326-CDA4-420A-9426-83C102504E6A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{198FB338-70B7-4549-BE6E-B817BB2C8936}"
+	ProjectSection(SolutionItems) = preProject
+		JellyFishRenderer\SSEffect.vert = JellyFishRenderer\SSEffect.vert
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
