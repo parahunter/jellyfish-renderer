@@ -5,6 +5,7 @@ uniform mat4 projection;
 uniform mat4 modelView;
 uniform float time;
 uniform vec3 color;
+uniform float phaseShift;
 
 in vec3 position;
 in vec3 normal;
@@ -23,15 +24,15 @@ void main (void)
 {
 	//woobliness
 	float maxY = 26;
-	float heightMod = (maxY - position.y) * 3 / maxY ;
-	float sinT = 0.9 + (1 + sin(5*time + 0.3 * position.y))*0.05 *  heightMod;
+	float heightMod = (maxY - position.y) / maxY ;
+	float sinT = 0.9 + (1 + sin(5*time + 0.2 * (position.y + phaseShift)))*0.15 *  heightMod;
 
 	vec4 screenPos = projection * modelView * vec4(position.x * sinT, position.y, position.z * sinT, 1.0);
 	gl_Position = screenPos;
 
 	float distMod = (screenPos.z - fadeOutDistance) / fadeoutInterval;
 
-	//translusency
+	//translucency
 	vec3 normTransformed = (modelView * vec4(normal, 0.0)).xyz;
 	
 	float translucency = pow(1 - abs(dot(normalize(normTransformed), viewDirection)),attentuation) ;

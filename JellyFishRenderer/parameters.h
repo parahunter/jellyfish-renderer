@@ -1,11 +1,13 @@
 
 //general parameters
-const int JELLYFISHES = 100;
+const int JELLYFISHES = 10;
 
 //Jellyfish general parameters
-const float SPEED = 100.0f;
+//const float SPEED = 100.0f;
 const float MIN_SCALE = 25.0f;
 const float MAX_HEIGHT = 2000.0f;
+const float MIN_SPEED = 50.0f;
+const float MAX_SPEED = 140.0f;
 
 //Jellyfish tentacles parameters
 const int TENTACLES_OUTER_CIRCLE = 10;

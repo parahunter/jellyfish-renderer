@@ -13,20 +13,10 @@
 #include "Jellyfish.h"
 #include "parameters.h";
 #include "HSVColorPicker.h"
+#include "Shader.h"
 
 using namespace std;
 using namespace Angel;
-
-struct Shader {
-	GLuint shaderProgram;
-	GLuint timeUniform;
-	GLuint projectionUniform;
-	GLuint modelViewUniform;
-	GLuint positionAttribute;
-	GLuint normalAttribute;
-	GLuint phaseUniform;
-	GLuint colorUniform;
-};
 
 Shader headShader,tentacleShader,skyShader;
 
@@ -195,18 +185,9 @@ void display()
 			if(colorPicker.state == COLOR_RANDOM)
 				jellys.at(i).baseColor = colorPicker.PickColor();
 		}
-		glBindVertexArray(headVertexArrayObject);
-		glUseProgram(headShader.shaderProgram);
-		glUniformMatrix4fv(headShader.projectionUniform, 1, GL_TRUE, projection);
-		glUniform1f(headShader.timeUniform, (float)timeCounter);
 		
-		jellys.at(i).update(deltatime,view);
-
-		glBindVertexArray(tentacleVertexArrayObject);
-		glUseProgram(tentacleShader.shaderProgram);
-		glUniform1f(tentacleShader.timeUniform, (float)timeCounter);
-		glUniformMatrix4fv(tentacleShader.projectionUniform, 1, GL_TRUE, projection);
-		jellys.at(i).updateTentacles(view, tentacleShader.phaseUniform);
+		jellys.at(i).update(headVertexArrayObject,view,projection,timeCounter,deltatime);
+		jellys.at(i).updateTentacles(tentacleVertexArrayObject,view,projection,timeCounter);
 	}
 	
 	glFlush();
@@ -224,7 +205,6 @@ void reshape(int W, int H) {
 void animate() 
 {
 	//timeCounter = clock()/CLOCKS_PER_SEC;
-
 	glutPostRedisplay();
 }
 
@@ -301,22 +281,18 @@ void initJellys()
 	for(int i = 0; i < JELLYFISHES; i++) {
 		vec3 position = generateRandomJellyfishPosition();
 		float scaleFactor = 0.1;
-
+		float speed = MIN_SPEED + (rand() % 1000) * (MAX_SPEED-MIN_SPEED) / 999;
 		vec3 color = colorPicker.PickColor();
 
 		Jellyfish newJelly(position,
 						   vec3(0,0,0),
-						   vec3(0,SPEED,0), 
+						   vec3(0,speed,0), 
 						   vec3(scaleFactor,scaleFactor,scaleFactor), 
 						   color, 
-						   &indices[0], 
-						   indices.size(), 
-						   &tentacleIndices[0], 
-						   tentacleIndices.size(), 
-						   headShader.modelViewUniform, 
-						   tentacleShader.modelViewUniform,
-						   headShader.colorUniform,
-						   tentacleShader.colorUniform);
+						   indices,  
+						   tentacleIndices, 
+						   headShader, 
+						   tentacleShader);
 		
 		jellys.push_back(newJelly);
 	}

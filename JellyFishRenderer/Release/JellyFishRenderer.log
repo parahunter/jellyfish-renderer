@@ -1,69 +1,48 @@
-﻿Build started 08-01-2013 11:12:12.
-     1>Project "C:\gitProjects\JellyfishRenderer\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
+﻿Build started 08/01/2013 23:59:14.
+     1>Project "C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\JellyFishRenderer.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Jellyfish.cpp main.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Jellyfish.cpp
          Jellyfish.cpp
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\Angel\Angel.h(67): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(701): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(702): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(703): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(724): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(726): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(729): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(747): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(15): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(15): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(15): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(21): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(21): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>Jellyfish.cpp(53): warning C4244: 'argument' : conversion from 'const int' to 'const GLfloat', possible loss of data
-     1>Jellyfish.cpp(56): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>Jellyfish.cpp(79): warning C4244: 'argument' : conversion from 'const int' to 'const GLfloat', possible loss of data
-     1>Jellyfish.cpp(82): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-         main.cpp
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\Angel\Angel.h(67): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(701): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(702): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(703): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(724): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(726): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(729): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\angel\mat.h(747): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>main.cpp(14): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(15): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(15): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(15): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(21): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\parameters.h(21): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>main.cpp(160): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>main.cpp(165): warning C4305: 'argument' : truncation from 'double' to 'const GLfloat'
-     1>main.cpp(186): warning C4018: '<' : signed/unsigned mismatch
-     1>main.cpp(240): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>main.cpp(240): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>main.cpp(248): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>main.cpp(248): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>main.cpp(269): warning C4018: '<' : signed/unsigned mismatch
-     1>main.cpp(303): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\Angel\Angel.h(67): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(701): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(702): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(703): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(724): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(726): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(729): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\angel\mat.h(747): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\parameters.h(17): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\parameters.h(17): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\parameters.h(17): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\parameters.h(23): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\parameters.h(23): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>Jellyfish.cpp(6): warning C4305: 'initializing' : truncation from 'double' to 'const float'
+     1>Jellyfish.cpp(32): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>Jellyfish.cpp(40): warning C4244: 'argument' : conversion from 'double' to 'const GLfloat', possible loss of data
+     1>Jellyfish.cpp(69): warning C4244: 'argument' : conversion from 'const int' to 'const GLfloat', possible loss of data
+     1>Jellyfish.cpp(72): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>Jellyfish.cpp(84): warning C4244: 'argument' : conversion from 'const int' to 'const GLfloat', possible loss of data
+     1>Jellyfish.cpp(87): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
        Link:
-         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\gitProjects\JellyfishRenderer\jellyfish-renderer\Release\JellyFishRenderer.exe" /NOLOGO glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\JellyFishRenderer.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\gitProjects\JellyfishRenderer\jellyfish-renderer\Release\JellyFishRenderer.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\gitProjects\JellyfishRenderer\jellyfish-renderer\Release\JellyFishRenderer.lib" /MACHINE:X86 Release\InitShader.obj
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Release\JellyFishRenderer.exe" /NOLOGO glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\JellyFishRenderer.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Release\JellyFishRenderer.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Release\JellyFishRenderer.lib" /MACHINE:X86 Release\InitShader.obj
          Release\obj_reader.obj
          Release\vtk_reader.obj
          Release\HSVColorPicker.obj
          Release\Jellyfish.obj
          Release\main.obj
          Generating code
-     1>c:\gitprojects\jellyfishrenderer\jellyfish-renderer\jellyfishrenderer\hsvcolorpicker.cpp(110): warning C4715: 'HSVColorPicker::PickColor' : not all control paths return a value
+     1>c:\users\alessandro\documents\github\jellyfish-renderer\jellyfishrenderer\hsvcolorpicker.cpp(110): warning C4715: 'HSVColorPicker::PickColor' : not all control paths return a value
          Finished generating code
-         JellyFishRenderer.vcxproj -> C:\gitProjects\JellyfishRenderer\jellyfish-renderer\Release\JellyFishRenderer.exe
+         JellyFishRenderer.vcxproj -> C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Release\JellyFishRenderer.exe
        Manifest:
-         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\gitProjects\JellyfishRenderer\jellyfish-renderer\Release\JellyFishRenderer.exe;#1" /manifest Release\JellyFishRenderer.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Release\JellyFishRenderer.exe;#1" /manifest Release\JellyFishRenderer.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "Release\JellyFishRenderer.unsuccessfulbuild".
          Touching "Release\JellyFishRenderer.lastbuildstate".
-     1>Done Building Project "C:\gitProjects\JellyfishRenderer\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.94
+Time Elapsed 00:00:01.68
