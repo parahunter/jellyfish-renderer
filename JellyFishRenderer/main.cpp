@@ -17,7 +17,6 @@
 using namespace std;
 using namespace Angel;
 
-
 struct Shader {
 	GLuint shaderProgram;
 	GLuint timeUniform;
@@ -28,7 +27,6 @@ struct Shader {
 	GLuint phaseUniform;
 	GLuint colorUniform;
 };
-
 
 Shader headShader,tentacleShader,skyShader;
 
@@ -105,7 +103,6 @@ void loadMesh(char * meshPath, vector<Vertex> & vertices, vector<unsigned int> &
 
 	*/
 }
-
 
 void loadShader(Shader & shader, char * vertex, char* fragment)
 {
@@ -376,5 +373,6 @@ int main(int argc, char* argv[]) {
 	tentacleVertexArrayObject = loadData(tentacleVertices, tentacleShader);
 
 	initJellys();
+
 	glutMainLoop();
 }
