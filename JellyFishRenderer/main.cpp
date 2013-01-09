@@ -168,7 +168,7 @@ void display()
 	glUniformMatrix4fv(skyShader.modelViewUniform, 1, GL_TRUE, view*Scale(1000));
 	glDrawElements(GL_TRIANGLES, skyIndices.size(), GL_UNSIGNED_INT, &skyIndices[0]);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
+    //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 	
 	colorPicker.UpdateColor(deltatime);
 	vec3 color = colorPicker.PickColor();
@@ -185,7 +185,7 @@ void display()
 			if(colorPicker.state == COLOR_RANDOM)
 				jellys.at(i).baseColor = colorPicker.PickColor();
 		}
-		
+//		cout << i << " " << jellys.at(i).f << endl;
 		jellys.at(i).update(headVertexArrayObject,view,projection,timeCounter,deltatime);
 		jellys.at(i).updateTentacles(tentacleVertexArrayObject,view,projection,timeCounter);
 	}

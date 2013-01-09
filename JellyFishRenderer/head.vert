@@ -41,4 +41,5 @@ void main (void)
 	fin_translucency *= mix(1.0, 0.0, distMod);
 
 	colorV = vec4(color, fin_translucency);
+	//colorV = vec4(phaseShift/6.28,phaseShift/6.28,phaseShift/6.28,1.0);
 }

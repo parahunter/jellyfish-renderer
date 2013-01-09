@@ -6,7 +6,6 @@
 const float frequency = 5.0/(2*M_PI);
 const float base_speed = 2.0f;
 float elapsed = 0.0f;
-GLfloat f = 0.0f;
 
 
 Jellyfish::Jellyfish(vec3& position,
@@ -46,9 +45,10 @@ void Jellyfish::update(GLuint vao, mat4 &view, mat4 & projection,float timeCount
 	glUseProgram(headShader.shaderProgram);
 	glUniformMatrix4fv(headShader.projectionUniform, 1, GL_TRUE, projection);
 	glUniform1f(headShader.timeUniform, (float)timeCounter);
+	glUniform1f(headShader.phaseUniform, (float)f);
 	glUniformMatrix4fv(headShader.modelViewUniform, 1, GL_TRUE, modelView);
 	glUniform3fv(headShader.colorUniform, 1, baseColor);
-	glUniform1f(headShader.phaseUniform, f);
+
 
 	glDrawElements(GL_TRIANGLES, headMesh.size(), GL_UNSIGNED_INT, &headMesh[0]);
 }

@@ -43,7 +43,7 @@ bool readOBJFile(const char* filename, vector<Vertex> & result, vector<unsigned 
 						Vertex v = { vertices.at(t.i[i]-1), normals.at(t.n[i]-1) };
 						vector<Vertex>::iterator it = find(result.begin(), result.end(), v);
 						if(it != result.end()) {
-							//cout << "FOUND! " << result.size()<< " " << std::distance(result.begin(), it) <<endl;
+						//cout << "FOUND! " << result.size()<< " " << std::distance(result.begin(), it) <<endl;
 							indices.push_back(std::distance(result.begin(), it));
 						} else {
 							result.push_back(v);

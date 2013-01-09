@@ -29,5 +29,6 @@ public:
 	vec3 velocity;
 	vec3 scale;
 	vec3 baseColor;
+	GLfloat f;
 };
 
