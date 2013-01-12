@@ -53,7 +53,7 @@ namespace Angel {
 			s.source = readShaderSource( s.filename );
 			if ( shaders[i].source == NULL ) {
 				std::cerr << "Failed to read " << s.filename << std::endl;
-				exit( EXIT_FAILURE );
+				//exit( EXIT_FAILURE );
 			}
 			GLuint shader = glCreateShader( s.type );
 			glShaderSource( shader, 1, (const GLchar**) &s.source, NULL );
@@ -70,7 +70,7 @@ namespace Angel {
 				std::cerr << logMsg << std::endl;
 				delete [] logMsg;
 
-				exit( EXIT_FAILURE );
+				//exit( EXIT_FAILURE );
 			}
 
 			delete [] s.source;
@@ -95,7 +95,7 @@ namespace Angel {
 			std::cerr << logMsg << std::endl;
 			delete [] logMsg;
 
-			exit( EXIT_FAILURE );
+			//exit( EXIT_FAILURE );
 		}
 		
 		/* use program object */
