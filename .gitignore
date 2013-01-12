@@ -12,6 +12,8 @@
 *.la
 *.a
 
+*.ipch
+
 Debug/
 
 Release/

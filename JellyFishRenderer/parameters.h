@@ -1,4 +1,3 @@
-
 //general parameters
 const int JELLYFISHES = 100;
 
