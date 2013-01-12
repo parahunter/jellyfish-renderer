@@ -13,7 +13,7 @@ in vec3 normal;
 out vec4 colorV;
 
 float base_transl = 0.2;
-float amplitude = 3;
+float amplitude = 5;
 
 const float fadeOutDistance = 100.0;
 const float fadeoutInterval = 50.0;
@@ -23,7 +23,7 @@ void main (void)
 	//woobliness
 	float maxY = 26;
 	float heightMod = (maxY - position.y) * 2 / maxY ;
-	float sinT = amplitude * (1 + sin((5)*time + 0.2 * position.y + phaseShift)) * 1.3;
+	float sinT = amplitude * (1 + sin((5)*time + 0.2 * position.y + phaseShift)) ;
 
 	vec4 screenPos = projection * modelView * vec4(position.x + sinT, position.y, position.z + sinT, 1.0);
 	gl_Position = screenPos;

@@ -40,6 +40,7 @@
     <ClInclude Include="HSVColorPicker.h" />
     <ClInclude Include="Jellyfish.h" />
     <ClInclude Include="parameters.h" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{880E6326-CDA4-420A-9426-83C102504E6A}</ProjectGuid>

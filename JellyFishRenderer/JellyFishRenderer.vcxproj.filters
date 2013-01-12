@@ -48,6 +48,7 @@
     <ClInclude Include="Angel\jellyfish_parameters.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="HSVColorPicker.h" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Angel">
