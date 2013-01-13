@@ -86,7 +86,7 @@ int initPP()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(framebufferPP_vertices), framebufferPP_vertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	programPP = InitShader("pp.vert", "pp.frag", "fragColor");
+	programPP = InitShader("Shaders/pp.vert", "Shaders/pp.frag", "fragColor");
   
 	char* attribute_name = "v_coord";
 	attributeVCoordPP = glGetAttribLocation(programPP, attribute_name);
@@ -221,7 +221,7 @@ void loadShader(Shader & shader, char * vertex, char* fragment)
 void loadSkyMesh() 
 {
 	vector<Vertex> vertices;
-	loadMesh("sphere.obj",vertices, skyIndices);
+	loadMesh("Meshes/sphere.obj",vertices, skyIndices);
 	skyVertexArrayObject = loadData(vertices,skyShader);
 }
 
@@ -407,14 +407,14 @@ int main(int argc, char* argv[]) {
 
 	glDisable(GL_DEPTH_TEST);	
 
-	loadShader(headShader,"head.vert","head.frag");
-	loadShader(tentacleShader,"tentacles.vert","tentacles.frag");
-	loadShader(skyShader,"sky.vert","sky.frag");
+	loadShader(headShader,"Shaders/head.vert","Shaders/head.frag");
+	loadShader(tentacleShader,"Shaders/tentacles.vert","Shaders/tentacles.frag");
+	loadShader(skyShader,"Shaders/sky.vert","Shaders/sky.frag");
 	
 	loadSkyMesh();
 	
-	char * jellyMesh =  "jellyfish_triang.obj";
-	char * tentacleMesh =   "jellyfish-tentacles_triang.obj";
+	char * jellyMesh =  "Meshes/jellyfish_triang.obj";
+	char * tentacleMesh =   "Meshes/jellyfish-tentacles_triang.obj";
 
 	vector<Vertex> jellyVertices;
 	loadMesh(jellyMesh,jellyVertices,indices);
