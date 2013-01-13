@@ -46,10 +46,10 @@ void display();
 vec3 generateRandomJellyfishPosition();
 //post processing effect variables
 GLuint framebufferPP, framebufferPPTexture, rboDepth;
-GLuint vboFramebufferPPVertices;
+GLuint vboFramebufferPPVertices, ppVao;
 //pp effect program stuff
 GLuint programPP, attributeVCoordPP, uniformFramebufferPPTexture;
-bool usePostProcessing = false;
+bool usePostProcessing = true;
 
 //Pors processing effect functions
 int initPP()
@@ -64,30 +64,23 @@ int initPP()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
-	//Depth buffer
-	glGenRenderbuffers(1, &rboDepth);
-	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, WINDOW_WIDTH, WINDOW_HEIGHT);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	
+
 	/* Framebuffer to link everything together */
 	glGenFramebuffers(1, &framebufferPP);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebufferPP);
 	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferPPTexture, 0);
-	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferPPTexture, 0);
-	
+
 	GLenum status;
 	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
 		fprintf(stderr, "glCheckFramebufferStatus: error %p", status);
 		return 0;
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	
+	glGenVertexArrays(1, &ppVao);
+    glBindVertexArray(ppVao);
+	
     GLfloat framebufferPP_vertices[] = {-1,-1,   1,-1,  -1,1,  1,1};
-
 	glGenBuffers(1, &vboFramebufferPPVertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vboFramebufferPPVertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(framebufferPP_vertices), framebufferPP_vertices, GL_STATIC_DRAW);
@@ -117,10 +110,6 @@ void ReshapePP()
 	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glBindTexture(GL_TEXTURE_2D, 0);
- 
-	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, WINDOW_WIDTH, WINDOW_HEIGHT);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 void closePP()
@@ -144,6 +133,9 @@ void drawPP()
 	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
 	glUniform1i(uniformFramebufferPPTexture, 0);
 	
+
+	glBindVertexArray(ppVao);
+
 	glEnableVertexAttribArray(attributeVCoordPP);
   
 	glUniform1f(glGetUniformLocation(programPP,"offset"), timeCounter);
