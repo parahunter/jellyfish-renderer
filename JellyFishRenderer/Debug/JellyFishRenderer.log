@@ -1,12 +1,21 @@
+<<<<<<< HEAD
 ﻿Build started 13/01/2013 16:30:37.
      1>Project "C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
+=======
+﻿Build started 13-01-2013 16:31:10.
+     1>Project "C:\gitProjects\JellyfishRenderer\jellyfish-renderer\JellyFishRenderer\JellyFishRenderer.vcxproj" on node 2 (build target(s)).
+>>>>>>> 08603db9e33ade3aaaee2323fcc0a58e74277902
      1>InitializeBuildStatus:
          Creating "Debug\JellyFishRenderer.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          All outputs are up-to-date.
        Link:
          All outputs are up-to-date.
+<<<<<<< HEAD
          JellyFishRenderer.vcxproj -> C:\Users\Alessandro\Documents\GitHub\jellyfish-renderer\Debug\JellyFishRenderer.exe
+=======
+         JellyFishRenderer.vcxproj -> C:\gitProjects\JellyfishRenderer\jellyfish-renderer\Debug\JellyFishRenderer.exe
+>>>>>>> 08603db9e33ade3aaaee2323fcc0a58e74277902
        FinalizeBuildStatus:
          Deleting file "Debug\JellyFishRenderer.unsuccessfulbuild".
          Touching "Debug\JellyFishRenderer.lastbuildstate".

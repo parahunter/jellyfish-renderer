@@ -138,7 +138,7 @@ void drawPP()
 
 	glEnableVertexAttribArray(attributeVCoordPP);
   
-	glUniform1f(glGetUniformLocation(programPP,"offset"), timeCounter);
+	glUniform1f(glGetUniformLocation(programPP,"time"), timeCounter);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vboFramebufferPPVertices);
 	glVertexAttribPointer(attributeVCoordPP, 2, GL_FLOAT, GL_FALSE, 0, 0);
