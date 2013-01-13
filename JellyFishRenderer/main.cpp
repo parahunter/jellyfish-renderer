@@ -236,13 +236,9 @@ void loadSkyMesh()
 void display() 
 {	   
 	if(usePostProcessing)
-	{
 		glBindFramebuffer(GL_FRAMEBUFFER, framebufferPP);
-	}
 	else
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	//glEnable(GL_DEPTH_TEST);
 
 	glClearColor(0.0,0.0,0.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -280,11 +276,11 @@ void display()
 				jellys.at(i).baseColor = colorPicker.PickColor();
 		}
 
-		jellys.at(i).updateTentacles(tentacleVertexArrayObject,view,projection,timeCounter);
 		jellys.at(i).update(headVertexArrayObject,view,projection,timeCounter,deltatime);
+		jellys.at(i).updateTentacles(tentacleVertexArrayObject,view,projection,timeCounter);
 	}
 	
-	glFlush();
+	glFinish();
 	glDisable(GL_BLEND);
 	
 	if(usePostProcessing)
@@ -350,6 +346,8 @@ void keyboard(unsigned char key, int x, int y){
 void printHelp()
 {
 	cout << "Use mouse drag to rotate around head."<< endl;
+	cout << "The c key changes the colors of the jellyfishes"<< endl;
+	cout << "The p key toggles the post processing effect on/off "<< endl;
 }
 
 vec3 generateRandomJellyfishPosition()
