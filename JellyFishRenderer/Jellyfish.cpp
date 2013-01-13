@@ -4,9 +4,8 @@
 
 
 const float frequency = 5.0/(2*M_PI);
-const float base_speed = 2.0f;
+const float base_speed = 4.0f;
 float elapsed = 0.0f;
-
 
 Jellyfish::Jellyfish(vec3& position,
 		   vec3& rotation, 
@@ -36,7 +35,7 @@ tentacleShader(tentacleShader)
 void Jellyfish::update(GLuint vao, mat4 &view, mat4 & projection,float timeCounter, float deltatime)
 {
 
-	position += (velocity * ((1 + sin(elapsed*2*M_PI*frequency + f))/2)) * deltatime;
+	position += (vec3(base_speed) + velocity * ((1 + sin(elapsed*2*M_PI*frequency + f))/2)) * deltatime;
 	elapsed  += deltatime;
 	
 	mat4 modelView = view * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale) * Translate(position);
