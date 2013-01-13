@@ -279,7 +279,6 @@ void display()
 		}
 
 		jellys.at(i).updateTentacles(tentacleVertexArrayObject,view,projection,timeCounter);
-
 		jellys.at(i).update(headVertexArrayObject,view,projection,timeCounter,deltatime);
 	}
 	

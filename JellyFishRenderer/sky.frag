@@ -4,7 +4,7 @@ in vec3 objectCoordinates;
 out vec4 fragColor;
 
 const vec4 top = vec4(83, 137, 181, 255) / 255.0;// vec4(164.0/255,211.0f/255,1.0,1.0);
-const vec4 bottom =  vec4(10, 42, 69, 255) / 255.0;// vec4(83, 137, 181, 255) / 255.0;//
+const vec4 bottom =  vec4(5, 26, 43, 255) / 255.0;// vec4(83, 137, 181, 255) / 255.0;//
 
 void main(void)
 {
