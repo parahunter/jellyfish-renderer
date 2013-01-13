@@ -2,6 +2,8 @@
 #include <math.h>
 #include <random>
 
+const float saturation = 0.7f;
+
 HSVColorPicker::HSVColorPicker(float initialHue) : state(COLOR_SINGLE) , currentHue(initialHue)
 {
 
@@ -95,16 +97,18 @@ vec3 HSVColorPicker::HSVToRGB(float h, float s, float v)
 
 vec3 HSVColorPicker::PickColor()
 {
+	
+
 	switch(state)
 	{
 	case COLOR_SINGLE:
-		return HSVToRGB(currentHue, 1.f, 1.f);
+		return HSVToRGB(currentHue, saturation, 1.f);
 		break;
 	case COLOR_RANDOM:
 		return PickRandomColor();
 		break;
 	case COLOR_PULSATING:
-		return HSVToRGB(currentHue, 1.f, 1.f);
+		return HSVToRGB(currentHue, saturation, 1.f);
 		break;
 	}
 }
@@ -113,7 +117,7 @@ vec3 HSVColorPicker::PickRandomColor()
 {
 	float hue =  360.f * ( rand() % 1000 / (float) 1000);
 	
-	return HSVToRGB(hue, 1., 1.);
+	return HSVToRGB(hue, saturation, 1.);
 }
 
 HSVColorPicker::HSVColorPicker(void)

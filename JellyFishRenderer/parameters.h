@@ -18,7 +18,7 @@ const vec4 BACKGROUND = vec4(93.0/255,145.0/255,201.0/255,1.0);
 // cube for generating jellies
 const float MAX_SCALE = 50.0f;
 const unsigned int STEPS_PER_DIRECTION = 10;
-const float MAX_SPAWN_HEIGHT = 1300.f;
+const float MAX_SPAWN_HEIGHT = 2000.f;
 const vec3 cubeOrigin(-MAX_SCALE*0.5*STEPS_PER_DIRECTION, -MAX_SPAWN_HEIGHT ,-MAX_SCALE*0.5*STEPS_PER_DIRECTION);
 
 

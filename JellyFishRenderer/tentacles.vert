@@ -12,7 +12,7 @@ in vec3 normal;
 
 out vec4 colorV;
 
-float base_transl = 0.2;
+float base_transl = 0.1;
 float amplitude = 5;
 
 const float fadeOutDistance = 100.0;

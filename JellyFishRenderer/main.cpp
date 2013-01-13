@@ -38,7 +38,6 @@ int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 800;
 
 vec2 sphericalCoordinates; // two first components of spherical coordinates (azimuth and elevation)
-float dist = 100; // last component of spherical coordinates
 vec2 angleOffset;
 vec2 mousePos;
 double timeCounter = 0.0;
@@ -46,116 +45,113 @@ double timeCounter = 0.0;
 void display();
 vec3 generateRandomJellyfishPosition();
 //post processing effect variables
-GLuint fbo, fbo_texture, rbo_depth;
-GLuint vbo_fbo_vertices;
+GLuint framebufferPP, framebufferPPTexture, rboDepth;
+GLuint vboFramebufferPPVertices;
 //pp effect program stuff
-GLuint program_postproc, attribute_v_coord_postproc, uniform_fbo_texture;
+GLuint programPP, attributeVCoordPP, uniformFramebufferPPTexture;
 bool usePostProcessing = false;
 
 //Pors processing effect functions
 int initPP()
 {
- /* Texture */
-  glActiveTexture(GL_TEXTURE0);
-  glGenTextures(1, &fbo_texture);
-  glBindTexture(GL_TEXTURE_2D, fbo_texture);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, 0);
- 
-  /* Depth buffer */
-  glGenRenderbuffers(1, &rbo_depth);
-  glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, WINDOW_WIDTH, WINDOW_HEIGHT);
-  glBindRenderbuffer(GL_RENDERBUFFER, 0);
- 
-  /* Framebuffer to link everything together */
-  glGenFramebuffers(1, &fbo);
-  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture, 0);
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
-  GLenum status;
-  if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
-    fprintf(stderr, "glCheckFramebufferStatus: error %p", status);
-    return 0;
-  }
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	/* Texture */
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &framebufferPPTexture);
+	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	//Depth buffer
+	glGenRenderbuffers(1, &rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	
+	/* Framebuffer to link everything together */
+	glGenFramebuffers(1, &framebufferPP);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebufferPP);
+	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferPPTexture, 0);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferPPTexture, 0);
+	
+	GLenum status;
+	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE) {
+		fprintf(stderr, "glCheckFramebufferStatus: error %p", status);
+		return 0;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    GLfloat fbo_vertices[] = {
-    -1, -1,
-     1, -1,
-    -1,  1,
-     1,  1,
-  };
-  glGenBuffers(1, &vbo_fbo_vertices);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GLfloat framebufferPP_vertices[] = {-1,-1,   1,-1,  -1,1,  1,1};
 
-  program_postproc = InitShader("pp.vert", "pp.frag", "fragColor");
+	glGenBuffers(1, &vboFramebufferPPVertices);
+	glBindBuffer(GL_ARRAY_BUFFER, vboFramebufferPPVertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(framebufferPP_vertices), framebufferPP_vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	programPP = InitShader("pp.vert", "pp.frag", "fragColor");
   
-  char* attribute_name = "v_coord";
-  attribute_v_coord_postproc = glGetAttribLocation(program_postproc, attribute_name);
-  if (attribute_v_coord_postproc == -1) {
-    fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
-    return 0;
-  }
+	char* attribute_name = "v_coord";
+	attributeVCoordPP = glGetAttribLocation(programPP, attribute_name);
+	if (attributeVCoordPP == -1) 
+	{
+		fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
+		return 0;
+	}
   
-  char* uniform_name = "fbo_texture";
-  uniform_fbo_texture = glGetUniformLocation(program_postproc, uniform_name);
-  if (uniform_fbo_texture == -1) {
-    fprintf(stderr, "Could not bind uniform %s\n", uniform_name);
-    return 0;
-  }
+	char* uniform_name = "framebufferPPTexture";
+	uniformFramebufferPPTexture = glGetUniformLocation(programPP, uniform_name);
+	if (uniformFramebufferPPTexture == -1) {
+		fprintf(stderr, "ohai Could not bind uniform %s\n", uniform_name);
+		return 0;
+	}
 }
 
 void ReshapePP()
 {
-  // Rescale FBO and RBO as well
-  glBindTexture(GL_TEXTURE_2D, fbo_texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-  glBindTexture(GL_TEXTURE_2D, 0);
+	// Rescale framebufferPP and RBO as well
+	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH, WINDOW_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
  
-  glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, WINDOW_WIDTH, WINDOW_HEIGHT);
-  glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 void closePP()
 {
-  glDeleteRenderbuffers(1, &rbo_depth);
-  glDeleteTextures(1, &fbo_texture);
-  glDeleteFramebuffers(1, &fbo);
-  glDeleteBuffers(1, &vbo_fbo_vertices);
-  glDeleteProgram(program_postproc);
+	glDeleteRenderbuffers(1, &rboDepth);
+	glDeleteTextures(1, &framebufferPPTexture);
+	glDeleteFramebuffers(1, &framebufferPP);
+	glDeleteBuffers(1, &vboFramebufferPPVertices);
+	glDeleteProgram(programPP);
 }
 
 void drawPP()
 {
-  glClearColor(0.0, 0.0, 0.0, 1.0);
-  glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
- 
-  glUseProgram(program_postproc);
-  glBindTexture(GL_TEXTURE_2D, fbo_texture);
-  glUniform1i(uniform_fbo_texture, /*GL_TEXTURE*/0);
-  glEnableVertexAttribArray(attribute_v_coord_postproc);
- 
-  glUniform1f(glGetUniformLocation(program_postproc,"offset"), timeCounter);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
+	glUseProgram(programPP);
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, framebufferPPTexture);
+	glUniform1i(uniformFramebufferPPTexture, 0);
+	
+	glEnableVertexAttribArray(attributeVCoordPP);
+  
+	glUniform1f(glGetUniformLocation(programPP,"offset"), timeCounter);
 
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-  glVertexAttribPointer(
-    attribute_v_coord_postproc,  // attribute
-    2,                  // number of elements per vertex, here (x,y)
-    GL_FLOAT,           // the type of each element
-    GL_FALSE,           // take our values as-is
-    0,                  // no extra data between each position
-    0                   // offset of first element
-  );
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-  glDisableVertexAttribArray(attribute_v_coord_postproc);
+	glBindBuffer(GL_ARRAY_BUFFER, vboFramebufferPPVertices);
+	glVertexAttribPointer(attributeVCoordPP, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDisableVertexAttribArray(attributeVCoordPP);
 }
 
 GLuint loadData(vector<Vertex> &vertexData, Shader & shader)
@@ -240,9 +236,11 @@ void loadSkyMesh()
 void display() 
 {	   
 	if(usePostProcessing)
-		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebufferPP);
 	else
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//glEnable(GL_DEPTH_TEST);
 
 	glClearColor(0.0,0.0,0.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -251,8 +249,7 @@ void display()
 	float deltatime = currentTime - timeCounter;
 	timeCounter = currentTime;
 
-	mat4 view = Translate(0,0,-dist) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
-
+	mat4 view = RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
 	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 10000);
 
 	glEnable(GL_BLEND);
@@ -265,8 +262,6 @@ void display()
 	glUniformMatrix4fv(skyShader.modelViewUniform, 1, GL_TRUE, view*Scale(1000));
 	glDrawElements(GL_TRIANGLES, skyIndices.size(), GL_UNSIGNED_INT, &skyIndices[0]);
 
-    //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
-	
 	colorPicker.UpdateColor(deltatime);
 	vec3 color = colorPicker.PickColor();
 	
@@ -283,19 +278,16 @@ void display()
 				jellys.at(i).baseColor = colorPicker.PickColor();
 		}
 
-//		cout << i << " " << jellys.at(i).f << endl;
-		jellys.at(i).update(headVertexArrayObject,view,projection,timeCounter,deltatime);
 		jellys.at(i).updateTentacles(tentacleVertexArrayObject,view,projection,timeCounter);
+
+		jellys.at(i).update(headVertexArrayObject,view,projection,timeCounter,deltatime);
 	}
 	
 	glFlush();
 	glDisable(GL_BLEND);
 	
 	if(usePostProcessing)
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		drawPP();
-	}
 
 	glutSwapBuffers();
 }
@@ -310,7 +302,6 @@ void reshape(int W, int H) {
 
 void animate() 
 {
-	//timeCounter = clock()/CLOCKS_PER_SEC;
 	glutPostRedisplay();
 }
 
@@ -335,15 +326,6 @@ void motion(int x, int y) {
 	sphericalCoordinates = angleOffset + deltaAng * motionSpeed;
 }
 
-void mouseWheel(int button, int dir, int x, int y) 
-{
-	if(dir > 0) {
-		dist -= 5;
-	} else {
-		dist += 5;
-	}
-}
-
 void keyboard(unsigned char key, int x, int y){
 	// allow keyboard access if scroll wheel is unavailable
 	if(key == 'c')
@@ -360,22 +342,17 @@ void keyboard(unsigned char key, int x, int y){
 
 	}
 	
-	if (key == '+') {
-		mouseWheel(0, 1, 0,0 );
-	} else if (key == '-') {
-		mouseWheel(0, -1, 0,0 );
-	}
-
 	if(key == 'p')
 		usePostProcessing = !usePostProcessing;
 }
 
-void printHelp(){
+void printHelp()
+{
 	cout << "Use mouse drag to rotate around head."<< endl;
-	//cout << "Use mouse wheel or '+'/'-' to change blending (works when implemented)."<< endl;
 }
 
-vec3 generateRandomJellyfishPosition() {
+vec3 generateRandomJellyfishPosition()
+{
 	unsigned int x = rand() % STEPS_PER_DIRECTION; 
 	unsigned int z = rand() % STEPS_PER_DIRECTION;
 	float height = ((rand() % 1000) * MAX_SPAWN_HEIGHT)/999;
@@ -426,7 +403,6 @@ int main(int argc, char* argv[]) {
 	glutMotionFunc(motion);
 	glutMouseFunc(mouse);
 	glutKeyboardFunc(keyboard);
-	glutMouseWheelFunc(mouseWheel);
 	glutVisibilityFunc(visible);
 	glutIdleFunc(animate);
 	glutReshapeWindow(WINDOW_WIDTH, WINDOW_HEIGHT);

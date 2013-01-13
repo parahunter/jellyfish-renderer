@@ -12,8 +12,8 @@ in vec3 normal;
 
 out vec4 colorV;
 
-const float base_transl = 0.2;
-const float border_transl = 0.8;
+const float base_transl = 0.1;
+const float border_transl = 0.4;
 const float attentuation = 2.0;
 const vec3 viewDirection = vec3(0,0,1);
 

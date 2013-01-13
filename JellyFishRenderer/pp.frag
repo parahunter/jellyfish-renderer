@@ -1,14 +1,17 @@
 #version 150
-
+ 
+uniform sampler2D fbo_texture;	
+uniform float offset;
+uniform vec2 pixelSize;
+varying vec2 f_texcoord;
 
 out vec4 fragColor;
- 
-uniform sampler2D fbo_texture;
-uniform float offset;
-varying vec2 f_texcoord;
- 
-void main(void) {
-  vec2 texcoord = f_texcoord;
-  texcoord.x += sin(texcoord.y * 4*2*3.14159 + offset) / 100;
-  gl_FragColor = texture2D(fbo_texture, texcoord);
+
+void main(void) 
+{
+	vec2 texcoord = f_texcoord;
+	texcoord.x += sin(texcoord.y * 4*2*3.14159 + offset) / 100;
+	texcoord.y += sin(texcoord.x * 4*2*3.14159 + offset) / 100;
+	
+	fragColor =  vec4(  texture2D(fbo_texture, texcoord) );
 }
