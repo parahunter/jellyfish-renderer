@@ -37,7 +37,7 @@ void Jellyfish::update(GLuint vao, mat4 &view, mat4 & projection,float timeCount
 
 	position += (vec3(base_speed) + velocity * ((1 + sin(elapsed*2*M_PI*frequency + f))/2)) * deltatime;
 	elapsed  += deltatime;
-	
+	  
 	mat4 modelView = view * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale) * Translate(position);
 	
 	glBindVertexArray(vao);
