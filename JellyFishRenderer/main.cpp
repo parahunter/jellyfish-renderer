@@ -103,10 +103,10 @@ int initPP()
 		return 0;
 	}
   
-	char* uniform_name = "framebufferPPTexture";
+	char* uniform_name = "fbo_texture";
 	uniformFramebufferPPTexture = glGetUniformLocation(programPP, uniform_name);
 	if (uniformFramebufferPPTexture == -1) {
-		fprintf(stderr, "ohai Could not bind uniform %s\n", uniform_name);
+		fprintf(stderr, "Could not bind uniform %s\n", uniform_name);
 		return 0;
 	}
 }
@@ -236,7 +236,9 @@ void loadSkyMesh()
 void display() 
 {	   
 	if(usePostProcessing)
+	{
 		glBindFramebuffer(GL_FRAMEBUFFER, framebufferPP);
+	}
 	else
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

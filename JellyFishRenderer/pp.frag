@@ -3,7 +3,7 @@
 uniform sampler2D fbo_texture;	
 uniform float offset;
 uniform vec2 pixelSize;
-varying vec2 f_texcoord;
+in vec2 f_texcoord;
 
 out vec4 fragColor;
 
