@@ -13,12 +13,14 @@
   <ItemGroup>
     <None Include="Angel\head.frag" />
     <None Include="Angel\head.vert" />
-    <None Include="head.frag" />
-    <None Include="head.vert" />
-    <None Include="sky.frag" />
-    <None Include="sky.vert" />
-    <None Include="tentacles.frag" />
-    <None Include="tentacles.vert" />
+    <None Include="Shaders\head.frag" />
+    <None Include="Shaders\head.vert" />
+    <None Include="Shaders\pp.frag" />
+    <None Include="Shaders\pp.vert" />
+    <None Include="Shaders\sky.frag" />
+    <None Include="Shaders\sky.vert" />
+    <None Include="Shaders\tentacles.frag" />
+    <None Include="Shaders\tentacles.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Angel\InitShader.cpp" />
