@@ -239,7 +239,7 @@ void display()
 	float deltatime = currentTime - timeCounter;
 	timeCounter = currentTime;
 
-	mat4 view = RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
+	mat4 view = Translate(0,0,-20) * RotateX(sphericalCoordinates.y) * RotateY(sphericalCoordinates.x);
 	mat4 projection = Perspective(70, float(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.01, 10000);
 
 	glEnable(GL_BLEND);

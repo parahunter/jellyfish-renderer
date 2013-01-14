@@ -1,5 +1,5 @@
 //general parameters
-const int JELLYFISHES = 60;
+const int JELLYFISHES = 100;
 
 //Jellyfish general parameters
 //const float SPEED = 100.0f;
